@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by User on 9/22/2016.
- */
 
 public class Util {
     public static File createNamePicture() throws IOException {
