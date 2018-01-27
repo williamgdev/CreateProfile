@@ -13,14 +13,12 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RC_SIGN_IN = 123;
-    private static final String DATABASE_NAME = "w2t_profile";
     // Choose authentication providers
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
         launchLogin();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
+        mDatabase = W2TUtil.getDatabase();
     }
 
     public void launchLogin() {
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             IdpResponse userData = IdpResponse.fromResultIntent(data);
             currentProfile = Profile.create(userData);
 
-            saveProfile(currentProfile);
+            W2TUtil.createOrSaveProfile(currentProfile);
             displayInfo(currentProfile);
 
             bLogIn.setVisibility(View.GONE);
@@ -91,11 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtName.setText("Hello! " + profile.getName());
         txtEmail.setText(profile.getEmail());
         txtPhoto.setText(profile.getPhoto());
-    }
-
-    private void saveProfile(Profile profile) {
-        String key = W2TUtil.generateKey(profile.getEmail());
-        mDatabase.child(key).setValue(profile.toMap());
     }
 
     @Override
@@ -113,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.button_my_profile:
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra("profile", currentProfile);
                 startActivity(intent);
                 break;
         }

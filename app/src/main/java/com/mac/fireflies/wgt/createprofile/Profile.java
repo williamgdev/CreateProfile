@@ -2,6 +2,7 @@ package com.mac.fireflies.wgt.createprofile;
 
 import com.firebase.ui.auth.IdpResponse;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by wiltorri on 1/27/18.
  */
 
-public class Profile {
+public class Profile implements Serializable {
     private String name;
     private String email;
     private String photo;
