@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     );
 
     TextView txtName, txtPhoto, txtEmail;
-    Button bLogout, bLogIn;
+    Button bLogout, bLogIn, bMyProfile;
     private DatabaseReference mDatabase;
     private Profile currentProfile;
 
@@ -41,8 +41,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtEmail = (TextView) findViewById(R.id.email);
         bLogIn = (Button) findViewById(R.id.button_logoin);
         bLogout = (Button) findViewById(R.id.button_logout);
+        bMyProfile = (Button) findViewById(R.id.button_my_profile);
         bLogIn.setOnClickListener(this);
         bLogout.setOnClickListener(this);
+        bMyProfile.setOnClickListener(this);
         launchLogin();
         mDatabase = FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }
@@ -108,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 launchLogin();
                 bLogout.setVisibility(View.VISIBLE);
                 bLogIn.setVisibility(View.GONE);
+                break;
+            case R.id.button_my_profile:
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
                 break;
         }
     }
