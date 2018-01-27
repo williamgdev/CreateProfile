@@ -12,12 +12,16 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int RC_SIGN_IN = 123;
+    private static final String DATABASE_NAME = "w2t_profile";
     // Choose authentication providers
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView textView;
     Button bLogout, bLogIn;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogIn.setOnClickListener(this);
         bLogout.setOnClickListener(this);
         launchLogin();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }
 
     public void launchLogin() {
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
-                        textView.setText("Thanks for us this app...");
+                        textView.setText("You has been singed out...");
                     }
                 });
     }
@@ -64,13 +70,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
             IdpResponse userData = IdpResponse.fromResultIntent(data);
-            textView.setText("Hello! " + userData.getEmail());
+            saveProfile(Profile.create(userData));
+            textView.setText("Hello! " + userData.getEmail() + "\n UID: " + userData.getIdpToken());
             bLogIn.setVisibility(View.GONE);
             bLogout.setVisibility(View.VISIBLE);
         } else {
             bLogout.setVisibility(View.GONE);
             bLogIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void saveProfile(Profile profile) {
+        String key = W2TUtil.generateKey(profile.getEmail());
+        mDatabase.child(key).setValue(profile.toMap());
     }
 
     @Override
