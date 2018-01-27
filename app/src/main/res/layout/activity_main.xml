@@ -12,6 +12,15 @@
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/greetings"/>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_logoin"
+        android:text="Log In"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_logout"
+        android:text="Logout"/>
 
 </LinearLayout>
