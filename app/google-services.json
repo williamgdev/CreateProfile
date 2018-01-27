@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "533514806978",
+    "firebase_url": "https://createprofile-3b654.firebaseio.com",
+    "project_id": "createprofile-3b654",
+    "storage_bucket": "createprofile-3b654.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533514806978:android:28b49f7bbd56c0b8",
+        "android_client_info": {
+          "package_name": "com.mac.fireflies.wgt.createprofile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "533514806978-j23litfv3gbtn7hq3t5jgqigl1dkil4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mac.fireflies.wgt.createprofile",
+            "certificate_hash": "5a33d2ea6b540023c80581ed7b77485ff7bead6e"
+          }
+        },
+        {
+          "client_id": "533514806978-7cdcommipnlfhig8702020sqtbedj916.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mac.fireflies.wgt.createprofile",
+            "certificate_hash": "f8bb1f979f18bcbc3ade984e260ec16d654619b5"
+          }
+        },
+        {
+          "client_id": "533514806978-qaipkbfc3o9ddln03n4ceid99u7kabve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABJR9gTEv4TKGII2KBKl8QgM52TAgl8H0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "533514806978-qaipkbfc3o9ddln03n4ceid99u7kabve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
