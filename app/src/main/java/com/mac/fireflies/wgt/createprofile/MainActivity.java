@@ -15,7 +15,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,15 +27,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
     );
 
-    TextView textView;
+    TextView txtName, txtPhoto, txtEmail;
     Button bLogout, bLogIn;
     private DatabaseReference mDatabase;
+    private Profile currentProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.greetings);
+        txtName = (TextView) findViewById(R.id.greetings);
+        txtPhoto = (TextView) findViewById(R.id.photo);
+        txtEmail = (TextView) findViewById(R.id.email);
         bLogIn = (Button) findViewById(R.id.button_logoin);
         bLogout = (Button) findViewById(R.id.button_logout);
         bLogIn.setOnClickListener(this);
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
-                        textView.setText("You has been singed out...");
+                        txtName.setText("You has been singed out...");
                     }
                 });
     }
@@ -70,14 +72,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
             IdpResponse userData = IdpResponse.fromResultIntent(data);
-            saveProfile(Profile.create(userData));
-            textView.setText("Hello! " + userData.getEmail() + "\n UID: " + userData.getIdpToken());
+            currentProfile = Profile.create(userData);
+
+            saveProfile(currentProfile);
+            displayInfo(currentProfile);
+
             bLogIn.setVisibility(View.GONE);
             bLogout.setVisibility(View.VISIBLE);
         } else {
             bLogout.setVisibility(View.GONE);
             bLogIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void displayInfo(Profile profile) {
+        txtName.setText("Hello! " + profile.getName());
+        txtEmail.setText(profile.getEmail());
+        txtPhoto.setText(profile.getPhoto());
     }
 
     private void saveProfile(Profile profile) {
