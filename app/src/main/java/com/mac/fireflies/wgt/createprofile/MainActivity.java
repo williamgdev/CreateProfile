@@ -12,28 +12,18 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.Arrays;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int RC_SIGN_IN = 123;
-    // Choose authentication providers
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
-    );
 
     TextView txtName, txtPhoto, txtEmail;
     Button bLogout, bLogIn, bMyProfile;
-    private DatabaseReference mDatabase;
     private Profile currentProfile;
+    private FirebaseInteractor firebaseInteractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        firebaseInteractor = FirebaseInteractor.getInstance();
         txtName = (TextView) findViewById(R.id.greetings);
         txtPhoto = (TextView) findViewById(R.id.photo);
         txtEmail = (TextView) findViewById(R.id.email);
@@ -43,39 +33,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogIn.setOnClickListener(this);
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
-        launchLogin();
-        mDatabase = W2TUtil.getDatabase();
-    }
 
-    public void launchLogin() {
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
-    }
-
-    public void logout() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        txtName.setText("You has been singed out...");
-                    }
-                });
+        firebaseInteractor.launchLogin(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
-            IdpResponse userData = IdpResponse.fromResultIntent(data);
-            currentProfile = Profile.create(userData);
-
-            W2TUtil.createOrSaveProfile(currentProfile);
-            displayInfo(currentProfile);
+        if (requestCode == FirebaseInteractor.RC_SIGN_IN && resultCode == RESULT_OK) {
+            processData(data);
 
             bLogIn.setVisibility(View.GONE);
             bLogout.setVisibility(View.VISIBLE);
@@ -100,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bLogIn.setVisibility(View.VISIBLE);
                 break;
             case R.id.button_logoin:
-                launchLogin();
+                firebaseInteractor.launchLogin(this);
                 bLogout.setVisibility(View.VISIBLE);
                 bLogIn.setVisibility(View.GONE);
                 break;
@@ -110,5 +76,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
         }
+    }
+
+    private void logout() {
+        firebaseInteractor.logout(this, new FirebaseInteractor.FirebaseLogoutListener() {
+            @Override
+            public void onLogout() {
+                txtName.setText("You has been singed out...");
+            }
+        });
+    }
+
+    private void processData(Intent data) {
+        IdpResponse userData = IdpResponse.fromResultIntent(data);
+        currentProfile = Profile.create(userData);
+
+        firebaseInteractor.createOrSaveProfile(currentProfile);
+        displayInfo(currentProfile);
     }
 }

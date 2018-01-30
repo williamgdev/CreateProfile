@@ -15,13 +15,12 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView photo;
     Button bSave;
     private Profile currentProfile;
-    private DatabaseReference mDatabase;
+    private FirebaseInteractor firebaseInteractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        getData();
         txtName = (EditText) findViewById(R.id.profile_name);
         photo = (ImageView) findViewById(R.id.profile_photo);
         bSave = (Button) findViewById(R.id.profile_button_save);
@@ -31,19 +30,21 @@ public class ProfileActivity extends AppCompatActivity {
                 updateOrCreateProfile();
             }
         });
+
+        firebaseInteractor = FirebaseInteractor.getInstance();
+        getData();
     }
 
     private void updateOrCreateProfile() {
         if (txtName.getText() != null &&
                 !txtName.getText().toString().equals(currentProfile.getName())) {
             currentProfile.setName(txtName.getText().toString());
-            W2TUtil.createOrSaveProfile(currentProfile);
+            firebaseInteractor.createOrSaveProfile(currentProfile);
         }
     }
 
     private void getData() {
         Intent intent = getIntent();
         currentProfile = (Profile) intent.getSerializableExtra("profile");
-        mDatabase = W2TUtil.getDatabase();
     }
 }
