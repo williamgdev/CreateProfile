@@ -35,13 +35,17 @@ public class ProfileActivity extends AppCompatActivity {
         bDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseInteractor.deleteProfile(currentProfile.getKey());
-                finish();
+                deleteProfile(currentProfile);
             }
         });
 
         firebaseInteractor = FirebaseInteractor.getInstance();
         getData();
+    }
+
+    private void deleteProfile(Profile profile) {
+        firebaseInteractor.deleteProfile(profile.getKey());
+        finish();
     }
 
     private void updateOrCreateProfile() {
@@ -52,12 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
         if (txtName.getText() != null &&
                 !txtName.getText().toString().equals(currentProfile.getName())) {
             currentProfile.setName(txtName.getText().toString());
-            firebaseInteractor.createOrUpdateProfile(currentProfile);
+            FirebaseInteractor.createOrUpdateProfile(currentProfile);
         }
     }
 
     private void getData() {
-        firebaseInteractor.getProfile(firebaseInteractor.getUserData().getEmail(), new FirebaseInteractor.FirebaseListener<Profile>() {
+        FirebaseInteractor.getProfile(firebaseInteractor.getUserData().getEmail(), new FirebaseInteractor.FirebaseListener<Profile>() {
             @Override
             public void onResult(Profile result) {
                 if (result != null) {
