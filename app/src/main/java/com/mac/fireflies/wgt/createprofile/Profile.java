@@ -11,17 +11,24 @@ import java.util.Map;
  */
 
 public class Profile implements Serializable {
+    private static final String PROFILE_NAME = "name";
+    private static final String PROFILE_EMAIL = "email";
+    private static final String PROFILE_PHOTO = "photo";
+    private static final String PROFILE_MTOKEN = "key";
     private String name;
     private String email;
     private String photo;
-    private String mToken;
+    private String key;
 
-    public String getmToken() {
-        return mToken;
+    public String getKey() {
+        if (key == null) {
+            key = W2TUtil.generateKey(email);
+        }
+        return key;
     }
 
-    public void setmToken(String mToken) {
-        this.mToken = mToken;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -51,16 +58,28 @@ public class Profile implements Serializable {
     public static Profile create(IdpResponse userData) {
         Profile profile = new Profile();
         profile.setEmail(userData.getEmail());
-        profile.setmToken(userData.getIdpToken());
+        profile.setKey(userData.getIdpToken());
         return profile;
     }
 
     public Map<String, String> toMap() {
         Map<String, String> jsonMap = new HashMap<>();
-        jsonMap.put("name", name);
-        jsonMap.put("email", email);
-        jsonMap.put("photo", photo);
-        jsonMap.put("mToken", mToken);
+        jsonMap.put(PROFILE_NAME, name);
+        jsonMap.put(PROFILE_EMAIL, email);
+        jsonMap.put(PROFILE_PHOTO, photo);
+        jsonMap.put(PROFILE_MTOKEN, key);
         return jsonMap;
+    }
+
+    public static Profile create(Map<String, String> data) {
+        Profile profile = new Profile();
+        if (data != null) {
+            profile.setName(data.get(Profile.PROFILE_NAME));
+            profile.setEmail(data.get(Profile.PROFILE_EMAIL));
+            profile.setPhoto(data.get(Profile.PROFILE_PHOTO));
+            profile.setKey(data.get(Profile.PROFILE_MTOKEN));
+
+        }
+        return profile;
     }
 }
