@@ -14,10 +14,11 @@ public class Profile implements Serializable {
     private static final String PROFILE_NAME = "name";
     private static final String PROFILE_EMAIL = "email";
     private static final String PROFILE_PHOTO = "photo";
-    private static final String PROFILE_MTOKEN = "key";
+    private static final String PROFILE_KEY = "key";
+    public static final String DEFAULT_PHOTO = "profile_default_pic.bmp";
     private String name;
     private String email;
-    private String photo;
+    private String photo = DEFAULT_PHOTO;
     private String key;
 
     public String getKey() {
@@ -59,6 +60,7 @@ public class Profile implements Serializable {
         Profile profile = new Profile();
         profile.setEmail(userData.getEmail());
         profile.setKey(userData.getIdpToken());
+        profile.setPhoto(DEFAULT_PHOTO);
         return profile;
     }
 
@@ -67,7 +69,7 @@ public class Profile implements Serializable {
         jsonMap.put(PROFILE_NAME, name);
         jsonMap.put(PROFILE_EMAIL, email);
         jsonMap.put(PROFILE_PHOTO, photo);
-        jsonMap.put(PROFILE_MTOKEN, key);
+        jsonMap.put(PROFILE_KEY, key);
         return jsonMap;
     }
 
@@ -77,7 +79,7 @@ public class Profile implements Serializable {
             profile.setName(data.get(Profile.PROFILE_NAME));
             profile.setEmail(data.get(Profile.PROFILE_EMAIL));
             profile.setPhoto(data.get(Profile.PROFILE_PHOTO));
-            profile.setKey(data.get(Profile.PROFILE_MTOKEN));
+            profile.setKey(data.get(Profile.PROFILE_KEY));
 
         }
         return profile;

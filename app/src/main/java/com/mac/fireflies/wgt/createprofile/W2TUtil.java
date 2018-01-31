@@ -1,5 +1,8 @@
 package com.mac.fireflies.wgt.createprofile;
 
+import android.graphics.Bitmap;
+
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,4 +29,9 @@ class W2TUtil {
         return password;
     }
 
+    public static byte[] convertImageFromBMPToByte(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
 }

@@ -2,6 +2,7 @@ package com.mac.fireflies.wgt.createprofile;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.storage.FirebaseStorage;
 
 public class ProfileActivity extends AppCompatActivity {
     EditText txtName;
@@ -68,6 +71,19 @@ public class ProfileActivity extends AppCompatActivity {
             currentProfile.setName(txtName.getText().toString());
             FirebaseInteractor.createOrUpdateProfile(currentProfile);
         }
+        photo.setDrawingCacheEnabled(true);
+        photo.buildDrawingCache();
+        firebaseInteractor.savePhotoProfile(currentProfile, photo.getDrawingCache(), new FirebaseInteractor.FirebaseListener<Uri>() {
+            @Override
+            public void onResult(Uri result) {
+                showText(result.toString());
+            }
+
+            @Override
+            public void onError(String error) {
+                showText(error);
+            }
+        });
     }
 
     private void getData() {
@@ -84,9 +100,13 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onError(String error) {
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                showText(error);
             }
         });
+    }
+
+    private void showText(String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     private void displayUserData() {
@@ -112,6 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             photo.setImageBitmap(imageBitmap);
+            currentProfile.setPhoto(currentProfile.getKey() + ".bmp");
         }
     }
 }
