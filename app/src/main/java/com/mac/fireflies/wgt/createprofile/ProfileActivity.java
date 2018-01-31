@@ -1,5 +1,8 @@
 package com.mac.fireflies.wgt.createprofile;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Profile currentProfile;
     private FirebaseInteractor firebaseInteractor;
     private TextView txtEmail;
+    static final int REQUEST_IMAGE_CAPTURE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 deleteProfile(currentProfile);
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePicture();
             }
         });
 
@@ -88,5 +98,20 @@ public class ProfileActivity extends AppCompatActivity {
             txtName.setText(profile.getName());
         }
         txtEmail.setText(profile.getEmail());
+    }
+
+    private void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            photo.setImageBitmap(imageBitmap);
+        }
     }
 }
