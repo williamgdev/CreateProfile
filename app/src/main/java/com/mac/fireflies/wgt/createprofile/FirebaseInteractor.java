@@ -85,6 +85,22 @@ public class FirebaseInteractor {
         }
     }
 
+    public void getUriPhotoProfile(Profile profile, final FirebaseListener<Uri> listener) {
+        Task<Uri> photoStorage = getStorage().child(IMAGES_PATH + profile.getPhoto()).getDownloadUrl();
+        photoStorage.addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                listener.onResult(uri);
+            }
+        });
+        photoStorage.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onError(e.getMessage());
+            }
+        });
+    }
+
     public static DatabaseReference getDatabase() {
         return FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }

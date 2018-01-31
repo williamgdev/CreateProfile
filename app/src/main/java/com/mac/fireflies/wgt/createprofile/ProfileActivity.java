@@ -118,6 +118,17 @@ public class ProfileActivity extends AppCompatActivity {
             txtName.setText(profile.getName());
         }
         txtEmail.setText(profile.getEmail());
+        firebaseInteractor.getUriPhotoProfile(profile, new FirebaseInteractor.FirebaseListener<Uri>() {
+            @Override
+            public void onResult(Uri result) {
+                //photo.(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                showText(error);
+            }
+        });
     }
 
     private void takePicture() {
