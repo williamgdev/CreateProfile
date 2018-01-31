@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -62,10 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateOrCreateProfile() {
-        if (currentProfile == null) {
-            currentProfile = new Profile();
-            currentProfile.setEmail(firebaseInteractor.getUserData().getEmail());
-        }
+        checkCurrentProfile();
         if (txtName.getText() != null &&
                 !txtName.getText().toString().equals(currentProfile.getName())) {
             currentProfile.setName(txtName.getText().toString());
@@ -73,17 +71,26 @@ public class ProfileActivity extends AppCompatActivity {
         }
         photo.setDrawingCacheEnabled(true);
         photo.buildDrawingCache();
-        firebaseInteractor.savePhotoProfile(currentProfile, photo.getDrawingCache(), new FirebaseInteractor.FirebaseListener<Uri>() {
-            @Override
-            public void onResult(Uri result) {
-                showText(result.toString());
-            }
+        if (!currentProfile.getPhoto().equals(Profile.DEFAULT_PHOTO)) {
+            firebaseInteractor.savePhotoProfile(currentProfile, photo.getDrawingCache(), new FirebaseInteractor.FirebaseListener<Uri>() {
+                @Override
+                public void onResult(Uri result) {
+                    showText(result.toString());
+                }
 
-            @Override
-            public void onError(String error) {
-                showText(error);
-            }
-        });
+                @Override
+                public void onError(String error) {
+                    showText(error);
+                }
+            });
+        }
+    }
+
+    private void checkCurrentProfile() {
+        if (currentProfile == null) {
+            currentProfile = new Profile();
+            currentProfile.setEmail(firebaseInteractor.getUserData().getEmail());
+        }
     }
 
     private void getData() {
@@ -118,17 +125,23 @@ public class ProfileActivity extends AppCompatActivity {
             txtName.setText(profile.getName());
         }
         txtEmail.setText(profile.getEmail());
-        firebaseInteractor.getUriPhotoProfile(profile, new FirebaseInteractor.FirebaseListener<Uri>() {
-            @Override
-            public void onResult(Uri result) {
-                //photo.(result);
-            }
+        if (!profile.getPhoto().equals(Profile.DEFAULT_PHOTO)) {
+            firebaseInteractor.getUriPhotoProfile(profile, new FirebaseInteractor.FirebaseListener<Uri>() {
+                @Override
+                public void onResult(Uri result) {
+                    Glide.with(getApplicationContext())
+                            .load(result)
+                            .into(photo);
 
-            @Override
-            public void onError(String error) {
-                showText(error);
-            }
-        });
+                }
+
+                @Override
+                public void onError(String error) {
+                    showText(error);
+                }
+            });
+        }
+
     }
 
     private void takePicture() {
@@ -143,6 +156,8 @@ public class ProfileActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             photo.setImageBitmap(imageBitmap);
+
+            checkCurrentProfile();
             currentProfile.setPhoto(currentProfile.getKey() + ".bmp");
         }
     }
