@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile;
+package com.mac.fireflies.wgt.createprofile.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,20 +6,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.ProfileActivity;
+import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.presenter.MainPresenter;
+import com.mac.fireflies.wgt.createprofile.view.MainView;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView {
+
 
     TextView txtName;
     Button bLogout, bLogIn, bMyProfile;
-    private FirebaseInteractor firebaseInteractor;
-    private IdpResponse userData;
+    MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        firebaseInteractor = FirebaseInteractor.getInstance();
+
         txtName = (TextView) findViewById(R.id.greetings);
         bLogIn = (Button) findViewById(R.id.button_logoin);
         bLogout = (Button) findViewById(R.id.button_logout);
@@ -28,14 +37,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
 
-        firebaseInteractor.launchLogin(this);
+        mainPresenter= new MainPresenter();
+        mainPresenter.attachView(this);
+        this.login();
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FirebaseInteractor.RC_SIGN_IN && resultCode == RESULT_OK) {
-            processData(data);
+            mainPresenter.loadData(data);
 
             bLogIn.setVisibility(View.GONE);
             bLogout.setVisibility(View.VISIBLE);
@@ -45,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void displayInfo(String email) {
+    @Override
+    public void displayInfo(String email) {
         txtName.setText("Hello! " + email);
     }
 
@@ -58,33 +71,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bLogIn.setVisibility(View.VISIBLE);
                 break;
             case R.id.button_logoin:
-                firebaseInteractor.launchLogin(this);
+                mainPresenter.login(this);
                 bLogout.setVisibility(View.VISIBLE);
                 bLogIn.setVisibility(View.GONE);
                 break;
             case R.id.button_my_profile:
-                firebaseInteractor.setUserData(userData);
+                mainPresenter.updateUserData();
                 launchProfile();
                 break;
         }
     }
 
-    private void launchProfile() {
+    public void launchProfile() {
         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
         startActivity(intent);
     }
 
-    private void logout() {
-        firebaseInteractor.logout(this, new FirebaseInteractor.FirebaseLogoutListener() {
-            @Override
-            public void onLogout() {
-                txtName.setText("You has been singed out...");
-            }
-        });
+    public void logout() {
+        mainPresenter.logout(this);
     }
 
-    private void processData(Intent data) {
-        userData = IdpResponse.fromResultIntent(data);
-        displayInfo(userData.getEmail());
+    //
+    @Override
+    public void login() {
+        mainPresenter.login(this);
+    }
+
+    @Override
+    public void showText(String error) {
+        Toast.makeText(this,error, Toast.LENGTH_SHORT).show();
     }
 }
