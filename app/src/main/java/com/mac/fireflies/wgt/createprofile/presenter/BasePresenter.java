@@ -1,5 +1,7 @@
 package com.mac.fireflies.wgt.createprofile.presenter;
 
+import android.content.Intent;
+
 import com.mac.fireflies.wgt.createprofile.view.BaseView;
 
 /**
@@ -11,4 +13,6 @@ public interface BasePresenter<V extends BaseView> {
     void attachView(V view);
 
     void detachView();
+
+    void loadData(Intent data);
 }

@@ -6,8 +6,6 @@ package com.mac.fireflies.wgt.createprofile.view;
 
 public interface MainView extends BaseView {
 
-    void displayInfo(String email);
-
     void launchProfile();
 
     void login();

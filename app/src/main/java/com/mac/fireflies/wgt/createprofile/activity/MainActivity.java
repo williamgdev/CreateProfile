@@ -1,5 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.IdpResponse;
 import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.ProfileActivity;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.presenter.MainPresenter;
+import com.mac.fireflies.wgt.createprofile.presenter.MainPresenterImpl;
 import com.mac.fireflies.wgt.createprofile.view.MainView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
 
-        mainPresenter= new MainPresenter();
+        mainPresenter= new MainPresenterImpl();
         mainPresenter.attachView(this);
         this.login();
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void displayInfo(String email) {
+    public void setInfo(String email) {
         txtName.setText("Hello! " + email);
     }
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bLogIn.setVisibility(View.VISIBLE);
                 break;
             case R.id.button_logoin:
-                mainPresenter.login(this);
+                mainPresenter.login();
                 bLogout.setVisibility(View.VISIBLE);
                 bLogIn.setVisibility(View.GONE);
                 break;
@@ -88,17 +88,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void logout() {
-        mainPresenter.logout(this);
+        mainPresenter.logout();
     }
 
     //
     @Override
     public void login() {
-        mainPresenter.login(this);
+        mainPresenter.login();
     }
 
     @Override
     public void showText(String error) {
         Toast.makeText(this,error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }
