@@ -19,7 +19,7 @@ public interface ProfileView extends BaseView {
 
     String getName();
 
-    Bitmap getPhoto();
+    Bitmap getCurrentBitmap();
 
     void setPhoto(Uri uri);
 }

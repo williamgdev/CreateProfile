@@ -119,7 +119,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     public void savePhoto() {
         checkCurrentProfile();
         currentProfile.setPhoto(currentProfile.getKey() + ".bmp");
-        firebaseInteractor.savePhotoProfile(currentProfile, profileView.getPhoto(), new FirebaseInteractor.FirebaseListener<Uri>() {
+        firebaseInteractor.savePhotoProfile(currentProfile, profileView.getCurrentBitmap(), new FirebaseInteractor.FirebaseListener<Uri>() {
             @Override
             public void onResult(Uri result) {
                 profileView.showText(result.toString());
