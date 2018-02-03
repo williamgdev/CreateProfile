@@ -3,8 +3,7 @@ package com.mac.fireflies.wgt.createprofile.presenter;
 import android.content.Intent;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.activity.MainActivity;
+import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.view.MainView;
 
 /**

@@ -3,8 +3,8 @@ package com.mac.fireflies.wgt.createprofile.presenter;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.Profile;
+import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.model.Profile;
 import com.mac.fireflies.wgt.createprofile.view.ProfileView;
 
 /**
@@ -35,7 +35,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
             public void onResult(Profile result) {
                 if (result != null) {
                     currentProfile = result;
-                    profileView.setProfile(currentProfile);
+                    profileView.setProfile(currentProfile.getName(), currentProfile.getEmail());
                     loadPhoto();
                 } else {
                     profileView.setInfo(firebaseInteractor.getUserData().getEmail());
@@ -49,7 +49,8 @@ public class ProfilePresenterImpl implements ProfilePresenter {
         });
     }
 
-    private void loadPhoto() {
+    @Override
+    public void loadPhoto() {
         if (!currentProfile.getPhoto().equals(Profile.DEFAULT_PHOTO)) {
             firebaseInteractor.getUriPhotoProfile(currentProfile, new FirebaseInteractor.FirebaseListener<Uri>() {
                 @Override
@@ -67,20 +68,40 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void deleteProfile() {
-        firebaseInteractor.deleteProfile(currentProfile.getKey());
-        profileView.finish();
+        firebaseInteractor.deleteProfile(currentProfile.getKey(), new FirebaseInteractor.FirebaseListener<String>() {
+            @Override
+            public void onResult(String result) {
+                profileView.showText(result);
+                profileView.finish();
+            }
 
+            @Override
+            public void onError(String error) {
+                profileView.showText(error);
+                profileView.finish();
+
+            }
+        });
     }
 
     @Override
     public void updateOrCreateProfile() {
         checkCurrentProfile();
         if (profileView.getName() != null &&
-                !profileView.getName().toString().equals(currentProfile.getName())) {
-            currentProfile.setName(profileView.getName().toString());
-            FirebaseInteractor.createOrUpdateProfile(currentProfile);
-        }
+                !profileView.getName().equals(currentProfile.getName())) {
+            currentProfile.setName(profileView.getName());
+            FirebaseInteractor.createOrUpdateProfile(currentProfile, new FirebaseInteractor.FirebaseListener<String>() {
+                @Override
+                public void onResult(String result) {
+                    profileView.showText(result);
+                }
 
+                @Override
+                public void onError(String error) {
+                    profileView.showText(error);
+                }
+            });
+        }
         if (!currentProfile.getPhoto().equals(Profile.DEFAULT_PHOTO)) {
             savePhoto();
         }

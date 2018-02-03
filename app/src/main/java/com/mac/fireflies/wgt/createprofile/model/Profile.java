@@ -1,10 +1,13 @@
-package com.mac.fireflies.wgt.createprofile;
+package com.mac.fireflies.wgt.createprofile.model;
 
 import com.firebase.ui.auth.IdpResponse;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mac.fireflies.wgt.createprofile.W2TUtil;
+
 
 /**
  * Created by wiltorri on 1/27/18.

@@ -1,11 +1,9 @@
-package com.mac.fireflies.wgt.createprofile;
+package com.mac.fireflies.wgt.createprofile.interactor;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -21,6 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mac.fireflies.wgt.createprofile.W2TUtil;
+import com.mac.fireflies.wgt.createprofile.model.Profile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -105,8 +105,21 @@ public class FirebaseInteractor {
         return FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }
 
-    public static void createOrUpdateProfile(Profile profile) {
-        getDatabase().child(profile.getKey()).setValue(profile.toMap());
+    public static void createOrUpdateProfile(Profile profile, final FirebaseListener<String> listener) {
+        getDatabase().child(profile.getKey())
+                .setValue(profile.toMap())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        listener.onResult("The profile has been created successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onError(e.toString());
+                    }
+                });
     }
 
     public static void getProfile(String email, final FirebaseListener<Profile> listener) {
@@ -148,8 +161,17 @@ public class FirebaseInteractor {
         return userData;
     }
 
-    public void deleteProfile(String key) {
-        getDatabase().child(key).removeValue();
+    public void deleteProfile(String key, final FirebaseListener<String> listener) {
+        getDatabase().child(key).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    listener.onResult("The profile has been deleted successfully.");
+                } else {
+                    listener.onError("Something went wrong, please try again...");
+                }
+            }
+        });
     }
 
     public interface FirebaseLogoutListener {

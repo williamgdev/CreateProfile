@@ -7,6 +7,8 @@ import com.mac.fireflies.wgt.createprofile.view.ProfileView;
  */
 
 public interface ProfilePresenter extends BasePresenter<ProfileView> {
+    void loadPhoto();
+
     void deleteProfile();
 
     void updateOrCreateProfile();

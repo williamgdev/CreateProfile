@@ -15,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.Profile;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.presenter.ProfilePresenter;
 import com.mac.fireflies.wgt.createprofile.presenter.ProfilePresenterImpl;
@@ -79,11 +77,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
     }
 
     @Override
-    public void setProfile(Profile profile) {
-        if (profile.getName() != null) {
-            txtName.setText(profile.getName());
+    public void setProfile(String name, String email) {
+        if (name != null) {
+            txtName.setText(name);
         }
-        txtEmail.setText(profile.getEmail());
+        txtEmail.setText(email);
     }
 
     @Override
