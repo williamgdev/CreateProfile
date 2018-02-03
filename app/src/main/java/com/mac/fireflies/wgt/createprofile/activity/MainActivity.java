@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mac.fireflies.wgt.createprofile.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.presenter.MainPresenter;
 import com.mac.fireflies.wgt.createprofile.presenter.MainPresenterImpl;
