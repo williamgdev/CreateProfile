@@ -23,10 +23,11 @@ import com.mac.fireflies.wgt.createprofile.view.ProfileView;
 public class ProfileActivity extends AppCompatActivity implements ProfileView {
     EditText txtName;
     ImageView photo;
-    Button bSave, bDelete;
+    Button bSave, bDelete, bUpload;
     ProfilePresenter profilePresenter;
     private TextView txtEmail;
     static final int REQUEST_IMAGE_CAPTURE = 100;
+    private static final int RESULT_PICK_PHOTO = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +58,22 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
                 takePicture();
             }
         });
+        bUpload = (Button) findViewById(R.id.profile_button_upload);
+        bUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickPhotoFromLibrary();
+            }
+        });
 
         profilePresenter.loadData(getIntent());
+    }
+
+    @Override
+    public void pickPhotoFromLibrary() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, RESULT_PICK_PHOTO);
     }
 
     @Override
@@ -116,6 +131,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             photo.setImageBitmap(imageBitmap);
+            profilePresenter.savePhoto();
+        } else if (requestCode == RESULT_PICK_PHOTO && resultCode == RESULT_OK) {
+            final Uri imageUri = data.getData();
+            setPhoto(imageUri);
             profilePresenter.savePhoto();
         }
     }

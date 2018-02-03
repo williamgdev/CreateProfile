@@ -9,6 +9,8 @@ import android.net.Uri;
 
 public interface ProfileView extends BaseView {
 
+    void pickPhotoFromLibrary();
+
     void setProfile(String name, String email);
 
     void takePicture();
