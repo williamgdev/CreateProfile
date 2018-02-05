@@ -1,6 +1,5 @@
 package com.mac.fireflies.wgt.createprofile.interactor;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -110,6 +109,7 @@ public class FirebaseInteractor {
 
     public static void getProfile(String email, final FirebaseListener<Profile> listener) {
         String key = W2TUtil.generateKey(email);
+        //@TODO Check why DatabaseValueEventListener is not working offline
         getDatabase().child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
