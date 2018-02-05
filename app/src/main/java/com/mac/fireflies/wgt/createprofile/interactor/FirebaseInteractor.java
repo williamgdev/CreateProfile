@@ -1,11 +1,9 @@
 package com.mac.fireflies.wgt.createprofile.interactor;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,8 +21,6 @@ import com.mac.fireflies.wgt.createprofile.W2TUtil;
 import com.mac.fireflies.wgt.createprofile.model.Profile;
 import com.mac.fireflies.wgt.createprofile.model.W2TUser;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,11 +35,6 @@ public class FirebaseInteractor {
     private static final String IMAGES_PATH = "images/";
     private final FirebaseAuth mAuth;
 
-    // Choose authentication providers
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
-    );
     private W2TUser currentUser;
 
     public static FirebaseInteractor getInstance() {
