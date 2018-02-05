@@ -8,6 +8,4 @@ package com.mac.fireflies.wgt.createprofile.view;
 public interface LoginView extends BaseView {
 
     void signIn(String email, String password);
-
-    void logout();
 }
