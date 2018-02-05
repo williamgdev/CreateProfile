@@ -142,6 +142,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         } else if (requestCode == RESULT_PICK_PHOTO && resultCode == RESULT_OK) {
             final Uri imageUri = data.getData();
             setPhoto(imageUri);
+            currentBitmap = ((BitmapDrawable)photo.getDrawable()).getBitmap();
             profilePresenter.savePhoto();
         }
     }
