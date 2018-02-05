@@ -154,11 +154,11 @@ public class FirebaseInteractor {
     }
 
     public W2TUser getCurrentUser() {
-        if (currentUser == null && mAuth.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null) {
             currentUser = W2TUser.create(mAuth.getCurrentUser());
             return currentUser;
         } else {
-            return null;
+            return currentUser = null;
         }
     }
 

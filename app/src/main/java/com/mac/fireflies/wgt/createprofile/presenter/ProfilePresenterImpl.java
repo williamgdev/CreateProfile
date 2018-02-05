@@ -30,7 +30,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void loadData(Intent data) {
-        FirebaseInteractor.getProfile(firebaseInteractor.getUserData().getEmail(), new FirebaseInteractor.FirebaseListener<Profile>() {
+        FirebaseInteractor.getProfile(firebaseInteractor.getCurrentUser().getEmail(), new FirebaseInteractor.FirebaseListener<Profile>() {
             @Override
             public void onResult(Profile result) {
                 if (result != null) {
@@ -38,7 +38,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                     profileView.setProfile(currentProfile.getName(), currentProfile.getEmail());
                     loadPhoto();
                 } else {
-                    profileView.setInfo(firebaseInteractor.getUserData().getEmail());
+                    profileView.setInfo(firebaseInteractor.getCurrentUser().getEmail());
                 }
             }
 
@@ -47,6 +47,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                 profileView.showText(error);
             }
         });
+    }
+
+    @Override
+    public void getCurrentUser() {
+        profileView.setInfo(firebaseInteractor.getCurrentUser().getEmail());
     }
 
     @Override
@@ -111,7 +116,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     public void checkCurrentProfile() {
         if (currentProfile == null) {
             currentProfile = new Profile();
-            currentProfile.setEmail(firebaseInteractor.getUserData().getEmail());
+            currentProfile.setEmail(firebaseInteractor.getCurrentUser().getEmail());
         }
     }
 
