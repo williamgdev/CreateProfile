@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button_logout:
                 logout();
                 bLogout.setVisibility(View.GONE);
+                launchLogin();
                 break;
             case R.id.button_my_profile:
                 launchProfile();
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void login() {
         if (mainPresenter.isUserLogged()) {
             mainPresenter.getCurrentUser();
+            bLogout.setVisibility(View.VISIBLE);
         } else {
             launchLogin();
         }

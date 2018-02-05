@@ -1,5 +1,7 @@
 package com.mac.fireflies.wgt.createprofile.interactor;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -8,6 +10,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -158,8 +161,24 @@ public class FirebaseInteractor {
         return currentUser != null;
     }
 
-    public interface FirebaseListener<T>{
+    public void signIn(String email, String password, final FirebaseListener<W2TUser> listener) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            listener.onResult(getCurrentUser());
+                        } else {
+                            listener.onError("Authentication failed.");
+                        }
+
+                    }
+                });
+    }
+
+    public interface FirebaseListener<T> {
         void onResult(T result);
+
         void onError(String error);
     }
 }
