@@ -11,4 +11,6 @@ public interface MainView extends BaseView {
     void login();
 
     void logout();
+
+    void launchLogin();
 }

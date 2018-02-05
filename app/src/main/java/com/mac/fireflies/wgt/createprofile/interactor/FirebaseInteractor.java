@@ -6,11 +6,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +21,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mac.fireflies.wgt.createprofile.W2TUtil;
 import com.mac.fireflies.wgt.createprofile.model.Profile;
+import com.mac.fireflies.wgt.createprofile.model.W2TUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,29 +37,21 @@ public class FirebaseInteractor {
     public static final int RC_SIGN_IN = 123;
     private static final String DATABASE_NAME = "w2t_profile";
     private static final String IMAGES_PATH = "images/";
+    private final FirebaseAuth mAuth;
 
     // Choose authentication providers
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
     );
-    private IdpResponse userData;
+    private W2TUser currentUser;
 
     public static FirebaseInteractor getInstance() {
         return ourInstance;
     }
 
     private FirebaseInteractor() {
-    }
-
-    public void launchLogin(Activity activity) {
-        // Create and launch sign-in intent
-        activity.startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public static StorageReference getStorage() {
@@ -143,22 +136,8 @@ public class FirebaseInteractor {
         });
     }
 
-    public void logout(Activity activity, final FirebaseLogoutListener listener) {
-        AuthUI.getInstance()
-                .signOut(activity)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        listener.onLogout();
-                    }
-                });
-    }
-
-    public void setUserData(IdpResponse userData) {
-        this.userData = userData;
-    }
-
-    public IdpResponse getUserData() {
-        return userData;
+    public void logout() {
+        mAuth.signOut();
     }
 
     public void deleteProfile(String key, final FirebaseListener<String> listener) {
@@ -174,8 +153,18 @@ public class FirebaseInteractor {
         });
     }
 
-    public interface FirebaseLogoutListener {
-        void onLogout();
+    public W2TUser getCurrentUser() {
+        if (currentUser == null && mAuth.getCurrentUser() != null) {
+            currentUser = W2TUser.create(mAuth.getCurrentUser());
+            return currentUser;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isUserLogged() {
+        getCurrentUser();
+        return currentUser != null;
     }
 
     public interface FirebaseListener<T>{

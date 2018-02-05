@@ -15,4 +15,6 @@ public interface BasePresenter<V extends BaseView> {
     void detachView();
 
     void loadData(Intent data);
+
+    void getCurrentUser();
 }

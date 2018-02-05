@@ -159,4 +159,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
             return false;
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        profilePresenter.detachView();
+    }
 }

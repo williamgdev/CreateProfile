@@ -13,7 +13,7 @@ public interface MainPresenter extends BasePresenter<MainView> {
 
     void login();
 
-    void updateUserData();
-
     void logout();
+
+    boolean isUserLogged();
 }

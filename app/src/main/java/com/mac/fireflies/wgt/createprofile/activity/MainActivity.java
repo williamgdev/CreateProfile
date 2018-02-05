@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.presenter.MainPresenter;
 import com.mac.fireflies.wgt.createprofile.presenter.MainPresenterImpl;
@@ -19,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     TextView txtName;
-    Button bLogout, bLogIn, bMyProfile;
+    Button bLogout, bMyProfile;
     MainPresenter mainPresenter;
 
     @Override
@@ -30,31 +29,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         txtName = (TextView) findViewById(R.id.greetings);
-        bLogIn = (Button) findViewById(R.id.button_logoin);
         bLogout = (Button) findViewById(R.id.button_logout);
         bMyProfile = (Button) findViewById(R.id.button_my_profile);
-        bLogIn.setOnClickListener(this);
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
 
         mainPresenter= new MainPresenterImpl();
         mainPresenter.attachView(this);
-        this.login();
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FirebaseInteractor.RC_SIGN_IN && resultCode == RESULT_OK) {
-            mainPresenter.loadData(data);
-
-            bLogIn.setVisibility(View.GONE);
-            bLogout.setVisibility(View.VISIBLE);
-        } else {
-            bLogout.setVisibility(View.GONE);
-            bLogIn.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -68,33 +50,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button_logout:
                 logout();
                 bLogout.setVisibility(View.GONE);
-                bLogIn.setVisibility(View.VISIBLE);
-                break;
-            case R.id.button_logoin:
-                mainPresenter.login();
-                bLogout.setVisibility(View.VISIBLE);
-                bLogIn.setVisibility(View.GONE);
                 break;
             case R.id.button_my_profile:
-                mainPresenter.updateUserData();
                 launchProfile();
                 break;
         }
     }
 
+    @Override
     public void launchProfile() {
         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
         startActivity(intent);
     }
 
+    @Override
     public void logout() {
         mainPresenter.logout();
     }
 
-    //
     @Override
     public void login() {
+        if (mainPresenter.isUserLogged()) {
+            mainPresenter.getCurrentUser();
+        } else {
+            launchLogin();
+        }
+    }
+
+    @Override
+    public void launchLogin() {
         mainPresenter.login();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -105,5 +92,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mainPresenter != null) {
+            this.login();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainPresenter.detachView();
     }
 }
