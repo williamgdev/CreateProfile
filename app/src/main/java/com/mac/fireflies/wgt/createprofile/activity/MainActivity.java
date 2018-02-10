@@ -40,6 +40,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void showProgress(boolean b) {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
     public void setInfo(String email) {
         txtName.setText("Hello! " + email);
     }

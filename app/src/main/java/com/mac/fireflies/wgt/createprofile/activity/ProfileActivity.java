@@ -95,6 +95,16 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
     }
 
     @Override
+    public void showProgress(boolean b) {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
     public void setInfo(String email) {
         txtEmail.setText(email);
     }

@@ -4,15 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Loader;
-import android.content.CursorLoader;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.database.Cursor;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,45 +24,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.model.W2TUser;
-import com.mac.fireflies.wgt.createprofile.view.LoginView;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.mac.fireflies.wgt.createprofile.presenter.SinInFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.presenter.SinInFragmentPresenterImpl;
+import com.mac.fireflies.wgt.createprofile.view.SignInFragmentView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor> , LoginView {
-    private static final String EMAIL = "email";
-    private static final String PASSWORD = "password";
+public class SignInInFragment extends Fragment implements SignInFragmentView {
+    SinInFragmentPresenter presenter;
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    // TODO: Rename and change types of parameters
-    private String mEmail;
-    private String mPassword;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private FirebaseInteractor firebaseInteractor;
 
     private OnFragmentInteractionListener mListener;
     private Context context;
 
-    public SignInFragment() {
+    public SignInInFragment() {
         // Required empty public constructor
     }
 
-    public static SignInFragment newInstance(String email, String password) {
-        SignInFragment fragment = new SignInFragment();
+    public static SignInInFragment newInstance(String email, String password) {
+        SignInInFragment fragment = new SignInInFragment();
         Bundle args = new Bundle();
-        args.putString(EMAIL, email);
-        args.putString(PASSWORD, password);
+        args.putString(SinInFragmentPresenterImpl.EMAIL, email);
+        args.putString(SinInFragmentPresenterImpl.PASSWORD, password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,9 +62,9 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new SinInFragmentPresenterImpl();
         if (getArguments() != null) {
-            mEmail = getArguments().getString(EMAIL);
-            mPassword = getArguments().getString(PASSWORD);
+            presenter.loadData(getArguments());
         }
     }
 
@@ -89,14 +75,15 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
         View view = inflater.inflate(R.layout.fragment_sig_in, container, false);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
-        populateAutoComplete();
+        presenter.attachView(this);
+        presenter.populateAutoComplete();
 
         mPasswordView = (EditText) view.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    presenter.attemptLogin();
                     return true;
                 }
                 return false;
@@ -107,13 +94,12 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                presenter.attemptLogin();
             }
         });
 
         mLoginFormView = view.findViewById(R.id.login_form);
         mProgressView = view.findViewById(R.id.login_progress);
-        firebaseInteractor = FirebaseInteractor.getInstance();
         return view;
     }
 
@@ -135,15 +121,8 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
         mListener = null;
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getActivity().getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
+    @Override
+    public boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
@@ -165,6 +144,60 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
         return false;
     }
 
+    @Override
+    public void resetError() {
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+    }
+
+    @Override
+    public void updateCredentials() {
+        // Store values at the time of the login attempt.
+        presenter.setCredentials(mEmailView.getText().toString(), mPasswordView.getText().toString());
+    }
+
+    @Override
+    public boolean isCredentialsValid() {
+        boolean valid = true;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(mPasswordView.getText().toString()) && !presenter.isPasswordValid(mPasswordView.getText().toString())) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            valid = false;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(mPasswordView.getText().toString())) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            valid = false;
+        } else if (!presenter.isEmailValid(mEmailView.getText().toString())) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            valid = false;
+        }
+
+        if (!valid) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        }
+        return valid;
+    }
+
+    @Override
+    public void setEmailAdapter(ArrayAdapter<String> adapter) {
+        mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onLoginSuccessful(String emailLogged) {
+        mListener.onLoginSuccessful(emailLogged);
+    }
+
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -173,73 +206,16 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+                presenter.populateAutoComplete();
             }
         }
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            signIn(email, password);
-        }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -272,72 +248,13 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(context,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(context,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
+    public void hideProgress() {
+        mProgressView.setVisibility(View.GONE);
     }
 
     @Override
     public void signIn(String email, String password) {
-        firebaseInteractor.signIn(email, password, new FirebaseInteractor.FirebaseListener<W2TUser>() {
-            @Override
-            public void onResult(W2TUser result) {
-                showProgress(false);
-                getActivity().finish();
-            }
-
-            @Override
-            public void onError(String error) {
-                showProgress(false);
-            }
-        });
+        presenter.signIn(email, password);
     }
 
     @Override
@@ -351,6 +268,6 @@ public class SignInFragment extends Fragment  implements LoaderCallbacks<Cursor>
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String uri);
+        void onLoginSuccessful(String email);
     }
 }

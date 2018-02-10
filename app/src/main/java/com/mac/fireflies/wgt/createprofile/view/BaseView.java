@@ -9,10 +9,10 @@ import android.content.Context;
 
 public interface BaseView {
 
-    //void showProgress(){}
+    void showProgress(boolean b);
 
 
-    //void hideProfress(){}
+    void hideProgress();
 
 
     void setInfo(String email);
