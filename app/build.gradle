@@ -25,7 +25,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // Required only if Facebook login support is required
-    
 
     // Required only if Twitter login support is required
     //    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
