@@ -5,18 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.fragment.SignInInFragment;
+import com.mac.fireflies.wgt.createprofile.fragment.SignInFragment;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements SignInInFragment.OnFragmentInteractionListener {
+public class LoginActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SignInInFragment fragment = SignInInFragment.newInstance("", "");
+        SignInFragment fragment = SignInFragment.newInstance("", "");
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_sign_in, fragment)

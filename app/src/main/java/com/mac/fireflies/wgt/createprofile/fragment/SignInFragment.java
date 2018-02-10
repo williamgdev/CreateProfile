@@ -30,7 +30,7 @@ import com.mac.fireflies.wgt.createprofile.view.SignInFragmentView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class SignInInFragment extends Fragment implements SignInFragmentView {
+public class SignInFragment extends Fragment implements SignInFragmentView {
     SinInFragmentPresenter presenter;
 
     /**
@@ -46,12 +46,12 @@ public class SignInInFragment extends Fragment implements SignInFragmentView {
     private OnFragmentInteractionListener mListener;
     private Context context;
 
-    public SignInInFragment() {
+    public SignInFragment() {
         // Required empty public constructor
     }
 
-    public static SignInInFragment newInstance(String email, String password) {
-        SignInInFragment fragment = new SignInInFragment();
+    public static SignInFragment newInstance(String email, String password) {
+        SignInFragment fragment = new SignInFragment();
         Bundle args = new Bundle();
         args.putString(SinInFragmentPresenterImpl.EMAIL, email);
         args.putString(SinInFragmentPresenterImpl.PASSWORD, password);
