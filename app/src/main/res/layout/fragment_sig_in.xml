@@ -13,9 +13,9 @@
     <include layout="@layout/progress_bar"/>
 
     <ScrollView
-        android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:id="@+id/login_form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -64,16 +64,39 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
-            
-            <TextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:orientation="horizontal"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:gravity="center"
-                android:textColorLink="@color/authui_colorPrimaryDark"
-                android:text="Sing Up"/>
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:gravity="end"
+                    android:padding="1dp"
+                    android:text="@string/not_a_member"
+                    android:textColorLink="@color/authui_colorPrimaryDark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:gravity="start"
+                    android:padding="1dp"
+                    android:text="@string/action_sign_up"
+                    android:textStyle="bold"
+                    android:textColor="@color/com_facebook_blue"
+                    android:textColorLink="@color/authui_colorPrimaryDark" />
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>
