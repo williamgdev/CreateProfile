@@ -77,7 +77,7 @@ public class SinInFragmentPresenterImpl implements LoaderManager.LoaderCallbacks
     public void attemptLogin() {
         view.resetError();
 
-        view.updateCredentials();
+        view.sendCredentialsToPresenter();
 
         if(view.isCredentialsValid()) {
             // Show a progress spinner, and kick off a background task to
