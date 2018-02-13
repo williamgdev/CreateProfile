@@ -1,9 +1,7 @@
-package com.mac.fireflies.wgt.createprofile.interactor;
+package com.mac.fireflies.wgt.createprofile.core.interactor;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,9 +18,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mac.fireflies.wgt.createprofile.W2TUtil;
-import com.mac.fireflies.wgt.createprofile.model.Profile;
-import com.mac.fireflies.wgt.createprofile.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
+import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 
 import java.util.Map;
 

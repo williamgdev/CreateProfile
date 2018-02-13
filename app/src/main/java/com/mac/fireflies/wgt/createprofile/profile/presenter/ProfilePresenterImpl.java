@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.model.Profile;
+import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 import com.mac.fireflies.wgt.createprofile.profile.view.ProfileView;
 
 /**

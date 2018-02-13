@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.model;
+package com.mac.fireflies.wgt.createprofile.core.model;
 
 import android.net.Uri;
 

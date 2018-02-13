@@ -3,7 +3,7 @@ package com.mac.fireflies.wgt.createprofile.home.presenter;
 import android.content.Intent;
 
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
-import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 
 /**
  * Created by Alestar on 2/1/2018.

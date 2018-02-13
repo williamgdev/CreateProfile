@@ -1,7 +1,7 @@
 package com.mac.fireflies.wgt.createprofile.home.presenter;
 
 
-import com.mac.fireflies.wgt.createprofile.BasePresenter;
+import com.mac.fireflies.wgt.createprofile.core.BasePresenter;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
 
 /**

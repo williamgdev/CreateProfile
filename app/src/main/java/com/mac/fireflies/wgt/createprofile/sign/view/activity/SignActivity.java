@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.sign.activity;
+package com.mac.fireflies.wgt.createprofile.sign.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.sign.fragment.SignInFragment;
-import com.mac.fireflies.wgt.createprofile.sign.fragment.SignUpFragment;
+import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
+import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
 
 /**
  * A login screen that offers login via email/password.

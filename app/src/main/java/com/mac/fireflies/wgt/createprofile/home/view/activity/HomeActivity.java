@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.home.activity;
+package com.mac.fireflies.wgt.createprofile.home.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,8 +13,8 @@ import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenter;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenterImpl;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
-import com.mac.fireflies.wgt.createprofile.profile.activity.ProfileActivity;
-import com.mac.fireflies.wgt.createprofile.sign.activity.SignActivity;
+import com.mac.fireflies.wgt.createprofile.profile.view.activity.ProfileActivity;
+import com.mac.fireflies.wgt.createprofile.sign.view.activity.SignActivity;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeView {
 

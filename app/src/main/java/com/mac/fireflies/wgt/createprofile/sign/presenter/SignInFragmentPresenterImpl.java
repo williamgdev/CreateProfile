@@ -2,8 +2,8 @@ package com.mac.fireflies.wgt.createprofile.sign.presenter;
 
 import android.content.Intent;
 
-import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignInFragmentView;
 

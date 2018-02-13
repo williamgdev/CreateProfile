@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.sign.fragment;
+package com.mac.fireflies.wgt.createprofile.sign.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;

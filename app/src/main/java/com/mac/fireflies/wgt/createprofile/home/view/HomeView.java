@@ -1,6 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.home.view;
 
-import com.mac.fireflies.wgt.createprofile.BaseView;
+import com.mac.fireflies.wgt.createprofile.core.BaseView;
 
 /**
  * Created by Alestar on 2/1/2018.
