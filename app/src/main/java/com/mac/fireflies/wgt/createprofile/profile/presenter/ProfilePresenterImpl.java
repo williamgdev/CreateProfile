@@ -1,17 +1,19 @@
-package com.mac.fireflies.wgt.createprofile.presenter;
+package com.mac.fireflies.wgt.createprofile.profile.presenter;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.model.Profile;
-import com.mac.fireflies.wgt.createprofile.view.ProfileView;
+import com.mac.fireflies.wgt.createprofile.profile.view.ProfileView;
 
 /**
  * Created by willimail on 2/2/18.
  */
 
 public class ProfilePresenterImpl implements ProfilePresenter {
+    private static final String TAG = "Profile =>";
     private ProfileView profileView;
 
     private Profile currentProfile;
@@ -44,7 +46,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
             @Override
             public void onError(String error) {
-                profileView.showText(error);
+                if (profileView != null) {
+                    profileView.showText(error);
+                } else {
+                    Log.d(TAG, "onError: " + error);
+                }
             }
         });
     }

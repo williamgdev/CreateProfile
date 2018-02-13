@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.fragment;
+package com.mac.fireflies.wgt.createprofile.sign.fragment;
 
 
 import android.animation.Animator;
@@ -20,25 +20,25 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenter;
-import com.mac.fireflies.wgt.createprofile.view.LoginView;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.sign.view.SignFragmentView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public abstract class SignBaseFragment extends Fragment implements LoginView {
+public abstract class SignFragment extends Fragment implements SignFragmentView {
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     protected static final int REQUEST_READ_CONTACTS = 0;
 
-    protected AutoCompleteTextView mEmailView;
-    protected EditText mPasswordView;
+    protected AutoCompleteTextView txtEmail;
+    protected EditText txtPassword;
 
-    protected View mProgressView;
-    protected View mLoginFormView;
+    protected View progressBar;
+    protected View scrollView;
 
-    public SignBaseFragment() {
+    public SignFragment() {
         // Required empty public constructor
     }
 
@@ -48,6 +48,13 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(getLayoutID(), container, false);
 
+        // Set up the login form.
+        txtEmail = (AutoCompleteTextView) view.findViewById(R.id.email);
+
+        txtPassword = (EditText) view.findViewById(R.id.password);
+
+        scrollView = view.findViewById(R.id.login_form);
+        progressBar = view.findViewById(R.id.login_progress);
         initializeUIComponents(view);
         initializePresenter();
 
@@ -60,7 +67,7 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
 
     protected abstract int getLayoutID();
 
-    protected abstract SignInFragmentPresenter getPresenter();
+    protected abstract SignFragmentPresenter getPresenter();
 
     @Override
     public boolean mayRequestContacts() {
@@ -71,7 +78,7 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(txtEmail, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -88,14 +95,14 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
     @Override
     public void resetError() {
         // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        txtEmail.setError(null);
+        txtPassword.setError(null);
     }
 
     @Override
     public void sendCredentialsToPresenter() {
         // Store values at the time of the login attempt.
-        getPresenter().setCredentials(mEmailView.getText().toString(), mPasswordView.getText().toString());
+        getPresenter().setCredentials(txtEmail.getText().toString(), txtPassword.getText().toString());
     }
 
     @Override
@@ -104,20 +111,20 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(mPasswordView.getText().toString()) && !getPresenter().isPasswordValid(mPasswordView.getText().toString())) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        if (!TextUtils.isEmpty(txtPassword.getText().toString()) && !getPresenter().isPasswordValid(txtPassword.getText().toString())) {
+            txtPassword.setError(getString(R.string.error_invalid_password));
+            focusView = txtPassword;
             valid = false;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(mPasswordView.getText().toString())) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+        if (TextUtils.isEmpty(txtPassword.getText().toString())) {
+            txtEmail.setError(getString(R.string.error_field_required));
+            focusView = txtEmail;
             valid = false;
-        } else if (!getPresenter().isEmailValid(mEmailView.getText().toString())) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        } else if (!getPresenter().isEmailValid(txtEmail.getText().toString())) {
+            txtEmail.setError(getString(R.string.error_invalid_email));
+            focusView = txtEmail;
             valid = false;
         }
 
@@ -131,7 +138,7 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
 
     @Override
     public void setEmailAdapter(ArrayAdapter<String> adapter) {
-        mEmailView.setAdapter(adapter);
+        txtEmail.setAdapter(adapter);
     }
 
     /**
@@ -148,44 +155,44 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progressBar UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+        // the progressBar spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
+            scrollView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressBar.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
     @Override
     public void hideProgress() {
-        mProgressView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
 

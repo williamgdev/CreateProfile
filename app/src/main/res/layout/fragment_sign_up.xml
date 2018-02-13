@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mac.fireflies.wgt.createprofile.fragment.SignUpFragment"
+    android:id="@+id/fragment_sign_up"
+    tools:context=".sign.fragment.SignUpFragment"
     android:orientation="vertical">
 
     <include layout="@layout/progress_bar"/>

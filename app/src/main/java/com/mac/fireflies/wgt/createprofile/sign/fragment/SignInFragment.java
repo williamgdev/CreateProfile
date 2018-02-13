@@ -1,21 +1,20 @@
-package com.mac.fireflies.wgt.createprofile.fragment;
+package com.mac.fireflies.wgt.createprofile.sign.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenter;
-import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenterImpl;
-import com.mac.fireflies.wgt.createprofile.view.SignInFragmentView;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenterImpl;
+import com.mac.fireflies.wgt.createprofile.sign.view.SignInFragmentView;
 
-public class SignInFragment extends SignBaseFragment implements SignInFragmentView {
+public class SignInFragment extends SignFragment implements SignInFragmentView {
     SignInFragmentPresenter presenter;
 
     private OnFragmentInteractionListener mListener;
@@ -45,11 +44,7 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
 
     @Override
     protected void initializeUIComponents(View view) {
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
-
-        mPasswordView = (EditText) view.findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        txtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -68,17 +63,22 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
             }
         });
 
-        mLoginFormView = view.findViewById(R.id.login_form);
-        mProgressView = view.findViewById(R.id.login_progress);
+        TextView signUpLink = (TextView) view.findViewById(R.id.sign_up_link);
+        signUpLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onSignUpClicked();
+            }
+        });
     }
 
     @Override
     protected int getLayoutID() {
-        return R.layout.fragment_sig_in;
+        return R.layout.fragment_sign_in;
     }
 
     @Override
-    protected SignInFragmentPresenter getPresenter() {
+    protected SignFragmentPresenter getPresenter() {
         return presenter;
     }
 
@@ -89,7 +89,7 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnSingUpListener");
+                    + " must implement OnSignUpListener");
         }
     }
 
@@ -112,5 +112,6 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
 
     public interface OnFragmentInteractionListener {
         void onLoginSuccessful(String email);
+        void onSignUpClicked();
     }
 }

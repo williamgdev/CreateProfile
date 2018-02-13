@@ -1,19 +1,19 @@
-package com.mac.fireflies.wgt.createprofile.presenter;
+package com.mac.fireflies.wgt.createprofile.home.presenter;
 
 import android.content.Intent;
 
+import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
 import com.mac.fireflies.wgt.createprofile.interactor.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.view.MainView;
 
 /**
  * Created by Alestar on 2/1/2018.
  */
 
-public class MainPresenterImpl implements MainPresenter {
+public class HomePresenterImpl implements HomePresenter {
 
 
     private FirebaseInteractor firebaseInteractor;
-    private MainView view;
+    private HomeView view;
 
     @Override
     public void login() {
@@ -50,7 +50,7 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     @Override
-    public void attachView(MainView view) {
+    public void attachView(HomeView view) {
         this.view=view;
         this.firebaseInteractor = FirebaseInteractor.getInstance();
 

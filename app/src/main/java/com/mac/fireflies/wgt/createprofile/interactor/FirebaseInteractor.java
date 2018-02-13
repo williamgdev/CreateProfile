@@ -1,7 +1,9 @@
 package com.mac.fireflies.wgt.createprofile.interactor;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -87,6 +89,7 @@ public class FirebaseInteractor {
     }
 
     public static DatabaseReference getDatabase() {
+        FirebaseDatabase.getInstance().goOnline();
         return FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }
 
@@ -124,6 +127,10 @@ public class FirebaseInteractor {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                if (databaseError.getCode() == -3) {
+                    FirebaseDatabase.getInstance().goOffline();
+                    return;
+                }
                 listener.onError(databaseError.getMessage());
             }
         });

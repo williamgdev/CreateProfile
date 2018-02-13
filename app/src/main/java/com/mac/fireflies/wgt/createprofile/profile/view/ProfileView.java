@@ -1,7 +1,9 @@
-package com.mac.fireflies.wgt.createprofile.view;
+package com.mac.fireflies.wgt.createprofile.profile.view;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+
+import com.mac.fireflies.wgt.createprofile.BaseView;
 
 /**
  * Created by willimail on 2/2/18.

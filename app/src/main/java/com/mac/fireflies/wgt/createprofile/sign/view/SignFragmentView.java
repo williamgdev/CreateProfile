@@ -1,15 +1,12 @@
-package com.mac.fireflies.wgt.createprofile.view;
-
+package com.mac.fireflies.wgt.createprofile.sign.view;
 
 import android.widget.ArrayAdapter;
 
 /**
- * Created by willimail on 2/5/18.
+ * Created by willimail on 2/12/18.
  */
 
-public interface LoginView extends BaseView {
-
-    void signIn(String email, String password);
+public interface SignFragmentView  extends SignView {
 
     boolean mayRequestContacts();
 

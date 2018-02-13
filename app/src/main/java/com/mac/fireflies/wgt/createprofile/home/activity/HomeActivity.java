@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.activity;
+package com.mac.fireflies.wgt.createprofile.home.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,16 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.MainPresenter;
-import com.mac.fireflies.wgt.createprofile.presenter.MainPresenterImpl;
-import com.mac.fireflies.wgt.createprofile.view.MainView;
+import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenter;
+import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenterImpl;
+import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
+import com.mac.fireflies.wgt.createprofile.profile.activity.ProfileActivity;
+import com.mac.fireflies.wgt.createprofile.sign.activity.SignActivity;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainView {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeView {
 
 
     TextView txtName;
     Button bLogout, bMyProfile;
-    MainPresenter mainPresenter;
+    HomePresenter homePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bLogout.setOnClickListener(this);
         bMyProfile.setOnClickListener(this);
 
-        mainPresenter= new MainPresenterImpl();
-        mainPresenter.attachView(this);
+        homePresenter = new HomePresenterImpl();
+        homePresenter.attachView(this);
 
     }
 
@@ -76,13 +78,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void logout() {
-        mainPresenter.logout();
+        homePresenter.logout();
     }
 
     @Override
     public void login() {
-        if (mainPresenter.isUserLogged()) {
-            mainPresenter.getCurrentUser();
+        if (homePresenter.isUserLogged()) {
+            homePresenter.getCurrentUser();
             bLogout.setVisibility(View.VISIBLE);
         } else {
             launchLogin();
@@ -91,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void launchLogin() {
-        mainPresenter.login();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        homePresenter.login();
+        Intent intent = new Intent(getApplicationContext(), SignActivity.class);
         startActivity(intent);
     }
 
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        if (mainPresenter != null) {
+        if (homePresenter != null) {
             this.login();
         }
     }
@@ -117,6 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mainPresenter.detachView();
+        homePresenter.detachView();
     }
 }

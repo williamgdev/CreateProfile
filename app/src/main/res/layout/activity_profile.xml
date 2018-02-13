@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mac.fireflies.wgt.createprofile.activity.ProfileActivity">
+    tools:context="com.mac.fireflies.wgt.createprofile.profile.ProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

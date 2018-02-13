@@ -1,8 +1,6 @@
-package com.mac.fireflies.wgt.createprofile.presenter;
+package com.mac.fireflies.wgt.createprofile;
 
 import android.content.Intent;
-
-import com.mac.fireflies.wgt.createprofile.view.BaseView;
 
 /**
  * Created by Alestar on 2/1/2018.

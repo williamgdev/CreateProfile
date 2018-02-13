@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.activity;
+package com.mac.fireflies.wgt.createprofile.profile.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,9 +23,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.ProfilePresenter;
-import com.mac.fireflies.wgt.createprofile.presenter.ProfilePresenterImpl;
-import com.mac.fireflies.wgt.createprofile.view.ProfileView;
+import com.mac.fireflies.wgt.createprofile.profile.presenter.ProfilePresenter;
+import com.mac.fireflies.wgt.createprofile.profile.presenter.ProfilePresenterImpl;
+import com.mac.fireflies.wgt.createprofile.profile.view.ProfileView;
 
 public class ProfileActivity extends AppCompatActivity implements ProfileView {
     EditText txtName;

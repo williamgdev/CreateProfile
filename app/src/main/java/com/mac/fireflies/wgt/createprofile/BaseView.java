@@ -1,4 +1,4 @@
-package com.mac.fireflies.wgt.createprofile.view;
+package com.mac.fireflies.wgt.createprofile;
 
 import android.app.Activity;
 import android.content.Context;

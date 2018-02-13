@@ -1,6 +1,8 @@
-package com.mac.fireflies.wgt.createprofile.presenter;
+package com.mac.fireflies.wgt.createprofile.profile.presenter;
 
-import com.mac.fireflies.wgt.createprofile.view.ProfileView;
+
+import com.mac.fireflies.wgt.createprofile.BasePresenter;
+import com.mac.fireflies.wgt.createprofile.profile.view.ProfileView;
 
 /**
  * Created by willimail on 2/2/18.
