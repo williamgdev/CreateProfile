@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.SinInFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.view.LoginView;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -60,7 +60,7 @@ public abstract class SignBaseFragment extends Fragment implements LoginView {
 
     protected abstract int getLayoutID();
 
-    protected abstract SinInFragmentPresenter getPresenter();
+    protected abstract SignInFragmentPresenter getPresenter();
 
     @Override
     public boolean mayRequestContacts() {

@@ -21,7 +21,7 @@ import java.util.List;
  * Created by willimail on 2/10/18.
  */
 
-public class SinInFragmentPresenterImpl implements LoaderManager.LoaderCallbacks<Cursor>, SinInFragmentPresenter {
+public class SignInFragmentPresenterImpl implements LoaderManager.LoaderCallbacks<Cursor>, SignInFragmentPresenter {
     private SignInFragmentView view;
 
     public static final String EMAIL = "email";
@@ -55,8 +55,8 @@ public class SinInFragmentPresenterImpl implements LoaderManager.LoaderCallbacks
 
     @Override
     public void loadData(Bundle arguments) {
-        mEmail = arguments.getString(SinInFragmentPresenterImpl.EMAIL);
-        mPassword = arguments.getString(SinInFragmentPresenterImpl.PASSWORD);
+        mEmail = arguments.getString(SignInFragmentPresenterImpl.EMAIL);
+        mPassword = arguments.getString(SignInFragmentPresenterImpl.PASSWORD);
     }
 
     @Override

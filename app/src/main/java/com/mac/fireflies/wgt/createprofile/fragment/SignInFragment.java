@@ -11,12 +11,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.presenter.SinInFragmentPresenter;
-import com.mac.fireflies.wgt.createprofile.presenter.SinInFragmentPresenterImpl;
+import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenter;
+import com.mac.fireflies.wgt.createprofile.presenter.SignInFragmentPresenterImpl;
 import com.mac.fireflies.wgt.createprofile.view.SignInFragmentView;
 
 public class SignInFragment extends SignBaseFragment implements SignInFragmentView {
-    SinInFragmentPresenter presenter;
+    SignInFragmentPresenter presenter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -27,23 +27,18 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
     public static SignInFragment newInstance(String email, String password) {
         SignInFragment fragment = new SignInFragment();
         Bundle args = new Bundle();
-        args.putString(SinInFragmentPresenterImpl.EMAIL, email);
-        args.putString(SinInFragmentPresenterImpl.PASSWORD, password);
+        args.putString(SignInFragmentPresenterImpl.EMAIL, email);
+        args.putString(SignInFragmentPresenterImpl.PASSWORD, password);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new SinInFragmentPresenterImpl();
+    protected void initializePresenter() {
+        presenter = new SignInFragmentPresenterImpl();
         if (getArguments() != null) {
             presenter.loadData(getArguments());
         }
-    }
-
-    @Override
-    protected void initializePresenter() {
         presenter.attachView(this);
         presenter.populateAutoComplete();
     }
@@ -83,7 +78,7 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
     }
 
     @Override
-    protected SinInFragmentPresenter getPresenter() {
+    protected SignInFragmentPresenter getPresenter() {
         return presenter;
     }
 
@@ -94,7 +89,7 @@ public class SignInFragment extends SignBaseFragment implements SignInFragmentVi
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnSingUpListener");
         }
     }
 
