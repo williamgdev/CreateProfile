@@ -180,6 +180,20 @@ public class FirebaseInteractor {
                 });
     }
 
+    public void signUp(String email, String password, final FirebaseListener<W2TUser> listener) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            listener.onResult(W2TUser.create(mAuth.getCurrentUser()));
+                        } else {
+                            listener.onError(task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
     public interface FirebaseListener<T> {
         void onResult(T result);
 

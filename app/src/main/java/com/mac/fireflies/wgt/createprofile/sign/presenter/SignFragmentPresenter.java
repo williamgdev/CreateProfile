@@ -11,9 +11,8 @@ public interface SignFragmentPresenter {
 
     void populateAutoComplete();
 
-    void setCredentials(String email, String password);
-
     boolean isEmailValid(String email);
 
     boolean isPasswordValid(String password);
+
 }

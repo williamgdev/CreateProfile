@@ -12,4 +12,6 @@ public interface SignInFragmentPresenter extends BasePresenter<SignInFragmentVie
     void attemptLogin();
 
     void signIn(String email, String password);
+
+    void setFields(String email, String password);
 }

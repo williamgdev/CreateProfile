@@ -12,9 +12,9 @@ public interface SignFragmentView  extends SignView {
 
     void resetError();
 
-    void sendCredentialsToPresenter();
-
     boolean isCredentialsValid();
 
     void setEmailAdapter(ArrayAdapter<String> adapter);
+
+    void sendFieldsToPresenter();
 }

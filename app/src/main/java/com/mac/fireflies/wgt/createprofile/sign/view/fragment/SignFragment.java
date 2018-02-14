@@ -100,12 +100,6 @@ public abstract class SignFragment extends Fragment implements SignFragmentView 
     }
 
     @Override
-    public void sendCredentialsToPresenter() {
-        // Store values at the time of the login attempt.
-        getPresenter().setCredentials(txtEmail.getText().toString(), txtPassword.getText().toString());
-    }
-
-    @Override
     public boolean isCredentialsValid() {
         boolean valid = true;
         View focusView = null;

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenterImpl;
@@ -83,6 +84,13 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     }
 
     @Override
+    public void sendFieldsToPresenter() {
+        // Store values at the time of the login attempt.
+        presenter.setFields(txtEmail.getText().toString(), txtPassword.getText().toString());
+
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -100,8 +108,8 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     }
 
     @Override
-    public void onLoginSuccessful(String emailLogged) {
-        mListener.onLoginSuccessful(emailLogged);
+    public void onLoginSuccessful(W2TUser user) {
+        mListener.onLoginSuccessful(user);
     }
 
 
@@ -111,7 +119,8 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     }
 
     public interface OnFragmentInteractionListener {
-        void onLoginSuccessful(String email);
+        void onLoginSuccessful(W2TUser user);
+
         void onSignUpClicked();
     }
 }

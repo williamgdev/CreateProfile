@@ -44,15 +44,21 @@ public class SignInFragmentPresenterImpl extends SignFragmentPresenterAbst imple
         firebaseInteractor.signIn(email, password, new FirebaseInteractor.FirebaseListener<W2TUser>() {
             @Override
             public void onResult(W2TUser result) {
-                view.showProgress(false);
-                view.onLoginSuccessful(result.getEmail());
+                view.hideProgress();
+                view.onLoginSuccessful(result);
             }
 
             @Override
             public void onError(String error) {
-                view.showProgress(false);
+                view.hideProgress();
             }
         });
+    }
+
+    @Override
+    public void setFields(String email, String password) {
+        mEmail = email;
+        mPassword = password;
     }
 
     @Override
@@ -69,7 +75,7 @@ public class SignInFragmentPresenterImpl extends SignFragmentPresenterAbst imple
     public void attemptLogin() {
         view.resetError();
 
-        view.sendCredentialsToPresenter();
+        view.sendFieldsToPresenter();
 
         if(view.isCredentialsValid()) {
             // Show a progressBar spinner, and kick off a background task to

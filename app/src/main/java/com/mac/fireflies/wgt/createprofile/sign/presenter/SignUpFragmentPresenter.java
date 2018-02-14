@@ -9,4 +9,8 @@ import com.mac.fireflies.wgt.createprofile.sign.view.SignUpFragmentView;
 
 public interface SignUpFragmentPresenter extends BasePresenter<SignUpFragmentView>, SignFragmentPresenter {
     void attemptSignUp();
+
+    boolean isConfirmationPasswordValid(String confirmationPassword);
+
+    void sendFields(String email, String password, String confirmationPassword, String firstName, String lastName);
 }

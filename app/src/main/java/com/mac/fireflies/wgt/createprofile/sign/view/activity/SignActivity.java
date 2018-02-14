@@ -1,11 +1,11 @@
 package com.mac.fireflies.wgt.createprofile.sign.view.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
 
@@ -26,12 +26,6 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onLoginSuccessful(String email) {
-        Toast.makeText(this, "Here: " +email, Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
     public void onSignUpClicked() {
         SignUpFragment fragment = new SignUpFragment();
         getSupportFragmentManager()
@@ -41,8 +35,18 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onSignUpSuccessful(W2TUser user) {
+        showToastAndClose(user);
+    }
 
+    @Override
+    public void onLoginSuccessful(W2TUser user) {
+        showToastAndClose(user);
+    }
+
+    private void showToastAndClose(W2TUser user) {
+        Toast.makeText(this, "Here: " + user.getName(), Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
 

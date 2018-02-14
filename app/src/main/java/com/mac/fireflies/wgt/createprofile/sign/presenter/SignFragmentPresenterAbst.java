@@ -43,13 +43,6 @@ public abstract class SignFragmentPresenterAbst implements SignFragmentPresenter
 
     protected abstract SignFragmentView getView();
 
-
-    @Override
-    public void setCredentials(String email, String password) {
-        mEmail = email;
-        mPassword = password;
-    }
-
     @Override
     public boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
