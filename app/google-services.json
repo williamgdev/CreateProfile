@@ -15,6 +15,18 @@
       },
       "oauth_client": [
         {
+          "client_id": "533514806978-mntagb6jgpnm2nutsvims60otmr64v81.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mac.fireflies.wgt.createprofile",
+            "certificate_hash": "63b9a933e723c615ccbc59762ae6ac304fe60a4a"
+          }
+        },
+        {
+          "client_id": "533514806978-nb548210l013t3udrm3n84no6nnfdcvs.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "533514806978-j23litfv3gbtn7hq3t5jgqigl1dkil4m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -48,7 +60,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "533514806978-qaipkbfc3o9ddln03n4ceid99u7kabve.apps.googleusercontent.com",
+              "client_id": "533514806978-nb548210l013t3udrm3n84no6nnfdcvs.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

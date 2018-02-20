@@ -1,7 +1,5 @@
 package com.mac.fireflies.wgt.createprofile.profile.model;
 
-import com.firebase.ui.auth.IdpResponse;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,14 +55,6 @@ public class Profile implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public static Profile create(IdpResponse userData) {
-        Profile profile = new Profile();
-        profile.setEmail(userData.getEmail());
-        profile.setKey(userData.getIdpToken());
-        profile.setPhoto(DEFAULT_PHOTO);
-        return profile;
     }
 
     public Map<String, String> toMap() {

@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.SignInButton;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignFragmentPresenter;
@@ -71,6 +72,7 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
                 mListener.onSignUpClicked();
             }
         });
+
     }
 
     @Override
