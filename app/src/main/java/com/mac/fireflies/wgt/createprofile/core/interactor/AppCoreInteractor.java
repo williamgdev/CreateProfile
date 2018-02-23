@@ -16,6 +16,7 @@ import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 public class AppCoreInteractor {
 
     private static final AppCoreInteractor ourInstance = new AppCoreInteractor();
+
     private final GoogleInteractor googleInteractor;
     FirebaseInteractor firebaseInteractor;
 
