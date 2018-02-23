@@ -94,7 +94,7 @@ public class FirebaseInteractor {
         return FirebaseDatabase.getInstance().getReference().child(DATABASE_NAME);
     }
 
-    public static void createOrUpdateProfile(Profile profile, final FirebaseListener<String> listener) {
+    public  void createOrUpdateProfile(Profile profile, final FirebaseListener<String> listener) {
         getDatabase().child(profile.getKey())
                 .setValue(profile.toMap())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -111,7 +111,7 @@ public class FirebaseInteractor {
                 });
     }
 
-    public static void getProfile(String email, final FirebaseListener<Profile> listener) {
+    public void getProfile(String email, final FirebaseListener<Profile> listener) {
         String key = W2TUtil.generateKey(email);
         //@TODO Check why DatabaseValueEventListener is not working offline
         getDatabase().child(key).addValueEventListener(new ValueEventListener() {

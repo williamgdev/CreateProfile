@@ -2,9 +2,7 @@ package com.mac.fireflies.wgt.createprofile.sign.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,6 +17,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
@@ -31,7 +30,7 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
 
     private static final int RC_SIGN_IN_GOOGLE = 600;
     private LinearLayout signInButtonsLayout;
-    private FirebaseInteractor firebaseInteractor;
+    private AppCoreInteractor appCoreInteractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,24 +93,34 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN_GOOGLE) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseInteractor = FirebaseInteractor.getInstance();
-                firebaseInteractor.signInWithGoogle(GoogleAuthProvider.getCredential(account.getIdToken(), null), new FirebaseInteractor.FirebaseListener<W2TUser>() {
-                    @Override
-                    public void onResult(W2TUser result) {
-                        showToastAndClose(result);
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign In failed", Toast.LENGTH_SHORT).show();
-            }
+            // Google Sign In was successful, authenticate with Firebase
+            appCoreInteractor = AppCoreInteractor.getInstance();
+            appCoreInteractor.getGoogleAccount(task, new AppCoreInteractor.AppCoreListener<GoogleSignInAccount>() {
+                @Override
+                public void onResult(GoogleSignInAccount result) {
+                    appCoreInteractor.signInWithGoogle(
+                            GoogleAuthProvider.getCredential(result.getIdToken(), null),
+                            new AppCoreInteractor.AppCoreListener<W2TUser>() {
+                                @Override
+                                public void onResult(W2TUser result) {
+                                    showToastAndClose(result);
+                                }
+
+                                @Override
+                                public void onError(String error) {
+                                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(getApplicationContext(), "Google Sign In failed", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
         }
     }
 
