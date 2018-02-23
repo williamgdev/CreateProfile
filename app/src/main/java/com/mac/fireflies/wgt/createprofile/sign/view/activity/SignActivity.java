@@ -54,16 +54,12 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
                 signInWithGoogle();
             }
         });
+
+        appCoreInteractor = AppCoreInteractor.getInstance();
     }
 
     private void signInWithGoogle() {// Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
+        startActivityForResult(appCoreInteractor.getGoogleSignIntent(getApplicationContext()), RC_SIGN_IN_GOOGLE);
     }
 
     public void launchSignInFragment() {
@@ -92,11 +88,8 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN_GOOGLE) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            // Google Sign In was successful, authenticate with Firebase
             appCoreInteractor = AppCoreInteractor.getInstance();
-            appCoreInteractor.getGoogleAccount(task, new AppCoreInteractor.AppCoreListener<GoogleSignInAccount>() {
+            appCoreInteractor.getGoogleAccount(data, new AppCoreInteractor.AppCoreListener<GoogleSignInAccount>() {
                 @Override
                 public void onResult(GoogleSignInAccount result) {
                     appCoreInteractor.signInWithGoogle(

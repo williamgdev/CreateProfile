@@ -1,5 +1,7 @@
 package com.mac.fireflies.wgt.createprofile.core.interactor;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -30,6 +32,7 @@ public class AppCoreInteractor {
     }
 
     public void logout() {
+        googleInteractor.logout();
         firebaseInteractor.logout();
     }
 
@@ -153,8 +156,8 @@ public class AppCoreInteractor {
         });
     }
 
-    public void getGoogleAccount(Task<GoogleSignInAccount> task, final AppCoreListener<GoogleSignInAccount> appCoreListener) {
-        googleInteractor.getGoogleAccount(task, new GoogleInteractor.GoogleInteractorListener() {
+    public void getGoogleAccount(Intent intent, final AppCoreListener<GoogleSignInAccount> appCoreListener) {
+        googleInteractor.getGoogleAccount(intent, new GoogleInteractor.GoogleInteractorListener() {
             @Override
             public void onResult(GoogleSignInAccount account) {
                 appCoreListener.onResult(account);
@@ -165,6 +168,10 @@ public class AppCoreInteractor {
                 appCoreListener.onError(error);
             }
         });
+    }
+
+    public Intent getGoogleSignIntent(Context context) {
+        return googleInteractor.getSignIntent(context);
     }
 
     public interface AppCoreListener<T> {
