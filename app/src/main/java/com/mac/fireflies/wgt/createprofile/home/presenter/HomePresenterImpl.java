@@ -2,6 +2,7 @@ package com.mac.fireflies.wgt.createprofile.home.presenter;
 
 import android.content.Intent;
 
+import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
 import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 
@@ -12,7 +13,7 @@ import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 public class HomePresenterImpl implements HomePresenter {
 
 
-    private FirebaseInteractor firebaseInteractor;
+    private AppCoreInteractor appCoreInteractor;
     private HomeView view;
 
     @Override
@@ -22,13 +23,13 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void logout() {
-        firebaseInteractor.logout();
+        appCoreInteractor.logout();
         view.showText("You has been singed out...");
     }
 
     @Override
     public boolean isUserLogged() {
-        return firebaseInteractor.isUserLogged();
+        return appCoreInteractor.isUserLogged();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class HomePresenterImpl implements HomePresenter {
 //  @TODO Check if still need this method
 //        if (data != null) {
 //            this.userData = data.getSerializableExtra("account");
-//            firebaseInteractor.setUserData(userData);
+//            appCoreInteractor.setUserData(userData);
 //            view.setInfo(userData.getEmail());
 //        }
 //        else {
@@ -46,13 +47,13 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void getCurrentUser() {
-        view.setInfo(firebaseInteractor.getCurrentUser().getEmail());
+        view.setInfo(appCoreInteractor.getCurrentUser().getEmail());
     }
 
     @Override
     public void attachView(HomeView view) {
         this.view=view;
-        this.firebaseInteractor = FirebaseInteractor.getInstance();
+        this.appCoreInteractor = AppCoreInteractor.getInstance();
 
     }
 
