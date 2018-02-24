@@ -67,36 +67,6 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:gravity="end"
-                    android:padding="1dp"
-                    android:text="@string/not_a_member"
-                    android:textColorLink="@color/colorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:id="@+id/sign_up_link"
-                    android:gravity="start"
-                    android:padding="1dp"
-                    android:text="@string/action_sign_up"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorAccent"
-                    android:textColorLink="@color/colorPrimary" />
-
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </ScrollView>

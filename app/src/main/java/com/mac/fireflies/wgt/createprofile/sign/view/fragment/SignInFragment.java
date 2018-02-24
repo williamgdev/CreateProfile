@@ -65,14 +65,6 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
             }
         });
 
-        TextView signUpLink = (TextView) view.findViewById(R.id.sign_up_link);
-        signUpLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onSignUpClicked();
-            }
-        });
-
     }
 
     @Override
@@ -123,6 +115,5 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     public interface OnFragmentInteractionListener {
         void onLoginSuccessful(W2TUser user);
 
-        void onSignUpClicked();
     }
 }

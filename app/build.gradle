@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'williamg.dev'
             keyPassword 'mAm1Developer'
-            storeFile file('/Users/willimail/keystore')
+            storeFile file('../../keystore')
             storePassword 'mAm1KeyStore'
         }
     }

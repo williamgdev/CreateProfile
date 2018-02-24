@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -43,6 +44,14 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
             @Override
             public void onClick(View view) {
                 launchSignInFragment();
+            }
+        });
+
+        TextView signUpLink = (TextView) findViewById(R.id.sign_up_link);
+        signUpLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSignUpFragment();
             }
         });
 
@@ -117,10 +126,6 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
         }
     }
 
-    @Override
-    public void onSignUpClicked() {
-        launchSignUpFragment();
-    }
 
     @Override
     public void onSignUpSuccessful(W2TUser user) {
