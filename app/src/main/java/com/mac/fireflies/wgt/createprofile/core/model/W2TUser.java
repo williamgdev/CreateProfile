@@ -9,6 +9,9 @@ import com.google.firebase.auth.FirebaseUser;
  */
 
 public class W2TUser {
+    public static final String PROVIDER_GOOGLE = "GOOGLE";
+    public static final String PROVIDER_FIREBASE = "FIREBASE";
+    public static final String PROVIDER_NONE = "NONE";
     private String email;
     private String name;
     private String UID;
@@ -23,7 +26,19 @@ public class W2TUser {
         w2TUser.setUID(user.getUid());
         w2TUser.setPhotoUrl(user.getPhotoUrl());
         w2TUser.setPhoneNumber(user.getPhoneNumber());
-        w2TUser.setProvider(user.getProviderId());
+        if (user.getProviders().size() > 0) {
+            switch (user.getProviders().get(0)) {
+                case "google.com":
+                    w2TUser.setProvider(PROVIDER_GOOGLE);
+                    break;
+
+                case "firebase":
+                    w2TUser.setProvider(PROVIDER_FIREBASE);
+                    break;
+            }
+        } else {
+            w2TUser.setProvider(PROVIDER_NONE);
+        }
         return w2TUser;
     }
 

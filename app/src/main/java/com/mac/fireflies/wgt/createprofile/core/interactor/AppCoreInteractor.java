@@ -31,12 +31,25 @@ public class AppCoreInteractor {
     }
 
     public void logout() {
+        if (isGoogleProvider()) {
+            googleInteractor.logout();
+        }
         firebaseInteractor.logout();
-        googleInteractor.logout();
+    }
+
+    private boolean isGoogleProvider() {
+        return firebaseInteractor.getCurrentUser().getProvider().equals(W2TUser.PROVIDER_GOOGLE);
     }
 
     public boolean isUserLogged(Context context) {
-        return firebaseInteractor.isUserLogged() && googleInteractor.isUserLogged(context);
+        boolean userLogged = false;
+        if (isGoogleProvider() && googleInteractor.isUserLogged(context)) {
+            userLogged = true;
+        }
+        if (firebaseInteractor.isUserLogged()) {
+            userLogged = true;
+        }
+        return userLogged;
     }
 
     public W2TUser getCurrentUser() {

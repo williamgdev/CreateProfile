@@ -203,7 +203,8 @@ public class FirebaseInteractor {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            listener.onResult(W2TUser.create(mAuth.getCurrentUser()));
+                            W2TUser user = W2TUser.create(mAuth.getCurrentUser());
+                            listener.onResult(user);
                         } else {
                             listener.onError(task.getException().getMessage());
                         }
