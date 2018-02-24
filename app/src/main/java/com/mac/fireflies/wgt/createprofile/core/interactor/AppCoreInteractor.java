@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
@@ -32,12 +31,12 @@ public class AppCoreInteractor {
     }
 
     public void logout() {
-        googleInteractor.logout();
         firebaseInteractor.logout();
+        googleInteractor.logout();
     }
 
-    public boolean isUserLogged() {
-        return firebaseInteractor.isUserLogged();
+    public boolean isUserLogged(Context context) {
+        return firebaseInteractor.isUserLogged() && googleInteractor.isUserLogged(context);
     }
 
     public W2TUser getCurrentUser() {

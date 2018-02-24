@@ -61,6 +61,17 @@ public class GoogleInteractor {
         return mGoogleSignInClient.getSignInIntent();
     }
 
+    public boolean isUserLogged(Context context) {
+        if (mGoogleSignInClient == null) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(context.getResources().getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
+        }
+        return GoogleSignIn.getLastSignedInAccount(context) != null;
+    }
+
     public interface GoogleInteractorListener{
         void onResult(GoogleSignInAccount account);
 

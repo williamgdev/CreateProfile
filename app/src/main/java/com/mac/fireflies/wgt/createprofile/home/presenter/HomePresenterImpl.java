@@ -29,7 +29,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public boolean isUserLogged() {
-        return appCoreInteractor.isUserLogged();
+        return appCoreInteractor.isUserLogged(view.getActivity());
     }
 
     @Override
