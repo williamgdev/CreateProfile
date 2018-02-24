@@ -32,8 +32,12 @@ public class W2TUser {
                     w2TUser.setProvider(PROVIDER_GOOGLE);
                     break;
 
-                case "firebase":
+                case "password":
                     w2TUser.setProvider(PROVIDER_FIREBASE);
+                    break;
+
+                default:
+                    w2TUser.setProvider(PROVIDER_NONE);
                     break;
             }
         } else {

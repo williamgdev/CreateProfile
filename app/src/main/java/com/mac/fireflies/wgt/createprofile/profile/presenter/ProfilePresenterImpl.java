@@ -57,7 +57,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
     }
 
     @Override
-    public void getCurrentUser() {
+    public void displayLoggedUser() {
         profileView.setInfo(appCoreInteractor.getCurrentUser().getEmail());
     }
 

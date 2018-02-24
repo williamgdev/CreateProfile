@@ -34,7 +34,7 @@ public class SignInFragmentPresenterImpl extends SignFragmentPresenterAbst imple
     }
 
     @Override
-    public void getCurrentUser() {
+    public void displayLoggedUser() {
         // @TODO Method is not used
 
     }

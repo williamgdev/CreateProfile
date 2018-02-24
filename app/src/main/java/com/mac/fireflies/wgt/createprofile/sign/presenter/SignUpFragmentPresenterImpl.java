@@ -40,7 +40,7 @@ public class SignUpFragmentPresenterImpl extends SignFragmentPresenterAbst imple
     }
 
     @Override
-    public void getCurrentUser() {
+    public void displayLoggedUser() {
 
     }
 

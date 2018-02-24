@@ -46,7 +46,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     @Override
-    public void getCurrentUser() {
+    public void displayLoggedUser() {
         view.setInfo(appCoreInteractor.getCurrentUser().getEmail());
     }
 

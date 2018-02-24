@@ -84,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void login() {
         if (homePresenter.isUserLogged()) {
-            homePresenter.getCurrentUser();
+            homePresenter.displayLoggedUser();
             bLogout.setVisibility(View.VISIBLE);
         } else {
             launchLogin();

@@ -38,7 +38,7 @@ public class AppCoreInteractor {
     }
 
     private boolean isGoogleProvider() {
-        return firebaseInteractor.getCurrentUser().getProvider().equals(W2TUser.PROVIDER_GOOGLE);
+        return firebaseInteractor.getCurrentUser() != null && firebaseInteractor.getCurrentUser().getProvider().equals(W2TUser.PROVIDER_GOOGLE);
     }
 
     public boolean isUserLogged(Context context) {

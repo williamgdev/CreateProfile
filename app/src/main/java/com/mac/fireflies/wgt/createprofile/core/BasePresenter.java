@@ -14,5 +14,5 @@ public interface BasePresenter<V extends BaseView> {
 
     void loadData(Intent data);
 
-    void getCurrentUser();
+    void displayLoggedUser();
 }
