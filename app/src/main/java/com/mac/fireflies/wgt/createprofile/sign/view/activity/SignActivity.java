@@ -9,17 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
-import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
@@ -32,6 +26,7 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
     private static final int RC_SIGN_IN_GOOGLE = 600;
     private LinearLayout signInButtonsLayout;
     private AppCoreInteractor appCoreInteractor;
+    private View signUpLinkLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +42,7 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
             }
         });
 
+        signUpLinkLayout = findViewById(R.id.layout_signup_link);
         TextView signUpLink = (TextView) findViewById(R.id.sign_up_link);
         signUpLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,11 +78,16 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
 
     private void launchSignUpFragment() {
         hideSignInLayout();
+        hideSignUpLinkLayout();
         SignUpFragment fragment = new SignUpFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_sign, fragment)
                 .commit();
+    }
+
+    private void hideSignUpLinkLayout() {
+        signUpLinkLayout.setVisibility(View.GONE);
     }
 
     public void hideSignInLayout() {
