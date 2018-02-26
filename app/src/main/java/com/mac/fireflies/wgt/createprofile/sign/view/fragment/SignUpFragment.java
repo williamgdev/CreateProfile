@@ -1,7 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.sign.view.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;

@@ -22,4 +22,8 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="not_a_member">Not a Member?</string>
+    <string name="enter_phone_number">Enter your phone number to get started</string>
+    <string name="enter_verification_code">Enter the verification code</string>
+    <string name="send_me_the_code">Send me the code</string>
+    <string name="verify_code">Verify code</string>
 </resources>

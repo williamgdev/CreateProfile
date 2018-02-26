@@ -16,12 +16,15 @@ import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
+import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignPhoneFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class SignActivity extends AppCompatActivity implements SignInFragment.OnFragmentInteractionListener, SignUpFragment.OnSignUpListener {
+public class SignActivity extends AppCompatActivity
+        implements SignInFragment.OnFragmentInteractionListener,
+        SignUpFragment.OnSignUpListener, SignPhoneFragment.OnSignPhoneFragmentListener{
 
     private static final int RC_SIGN_IN_GOOGLE = 600;
     private LinearLayout signInButtonsLayout;
@@ -64,24 +67,20 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
         phoneSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signInWithPhone("4159672388");
+                launchSignPhoneFragment();
             }
         });
         appCoreInteractor = AppCoreInteractor.getInstance();
     }
 
-    private void signInWithPhone(String phoneNumber) {
-        appCoreInteractor.signInWithPhone(phoneNumber, this, new AppCoreInteractor.AppCoreListener<W2TUser>() {
-            @Override
-            public void onResult(W2TUser result) {
-                showToastAndClose(result);
-            }
-
-            @Override
-            public void onError(String error) {
-                showMessage(error);
-            }
-        });
+    private void launchSignPhoneFragment() {
+        hideSignUpLinkLayout();
+        hideSignInLayout();
+        SignPhoneFragment fragment = SignPhoneFragment.newInstance("", "");
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_sign, fragment)
+                .commit();
     }
 
     private void signInWithGoogle() {// Configure Google Sign In
@@ -166,6 +165,11 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
     private void showToastAndClose(W2TUser user) {
         Toast.makeText(this, "Here: " + user.getName(), Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void onPhoneLoginSuccessful(W2TUser uri) {
+        showMessage("Login Successful");
     }
 }
 
