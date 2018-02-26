@@ -15,24 +15,37 @@
     <LinearLayout
         android:id="@+id/sign_in_buttons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/email_sign_in_button"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="16dp"
             android:drawableLeft="@android:drawable/sym_action_email"
             android:text="@string/action_sign_in"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_weight="1"/>
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button_google"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"/>
+
+
+        <Button
+            android:id="@+id/phone_sign_in_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:drawableLeft="@drawable/common_full_open_on_phone"
+            android:text="@string/action_sign_in"
+            android:textStyle="bold"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout

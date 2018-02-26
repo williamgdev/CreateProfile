@@ -1,18 +1,21 @@
 package com.mac.fireflies.wgt.createprofile.core.interactor;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,11 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
 import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wiltorri on 1/28/18.
@@ -189,7 +193,8 @@ public class FirebaseInteractor {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            listener.onResult(W2TUser.create(mAuth.getCurrentUser()));
+                            currentUser = W2TUser.create(mAuth.getCurrentUser());
+                            listener.onResult(currentUser);
                         } else {
                             listener.onError(task.getException().getMessage());
                         }
@@ -203,11 +208,47 @@ public class FirebaseInteractor {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            W2TUser user = W2TUser.create(mAuth.getCurrentUser());
-                            listener.onResult(user);
+                            currentUser = W2TUser.create(mAuth.getCurrentUser());
+                            listener.onResult(currentUser);
                         } else {
                             listener.onError(task.getException().getMessage());
                         }
+                    }
+                });
+    }
+
+    public void signInWithPhone(String phoneNumber, Activity activity, final FirebaseListener<W2TUser> listener) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber,        // Phone number to verify
+                60,              // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                activity,           // Activity (for callback binding)
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                        mAuth.signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    currentUser = W2TUser.create(mAuth.getCurrentUser());
+                                    listener.onResult(currentUser);
+                                } else {
+                                    listener.onError(task.getException().getMessage());
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
+                        listener.onError(e.getMessage());
+
+                    }
+
+                    @Override
+                    public void onCodeAutoRetrievalTimeOut(String s) {
+                        super.onCodeAutoRetrievalTimeOut(s);
+                        listener.onError(s);
                     }
                 });
     }

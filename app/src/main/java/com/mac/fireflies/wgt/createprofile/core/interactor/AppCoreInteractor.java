@@ -1,5 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.core.interactor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -184,6 +185,20 @@ public class AppCoreInteractor {
 
     public Intent getGoogleSignIntent(Context context) {
         return googleInteractor.getSignIntent(context);
+    }
+
+    public void signInWithPhone(String phoneNumber, Activity activity, final AppCoreListener<W2TUser> listener) {
+        firebaseInteractor.signInWithPhone(phoneNumber, activity, new FirebaseInteractor.FirebaseListener<W2TUser>() {
+            @Override
+            public void onResult(W2TUser result) {
+                listener.onResult(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                listener.onError(error);
+            }
+        });
     }
 
     public interface AppCoreListener<T> {

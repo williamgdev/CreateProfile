@@ -60,7 +60,28 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
             }
         });
 
+        Button phoneSignInButton = (Button) findViewById(R.id.phone_sign_in_button);
+        phoneSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInWithPhone("4159672388");
+            }
+        });
         appCoreInteractor = AppCoreInteractor.getInstance();
+    }
+
+    private void signInWithPhone(String phoneNumber) {
+        appCoreInteractor.signInWithPhone(phoneNumber, this, new AppCoreInteractor.AppCoreListener<W2TUser>() {
+            @Override
+            public void onResult(W2TUser result) {
+                showToastAndClose(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                showMessage(error);
+            }
+        });
     }
 
     private void signInWithGoogle() {// Configure Google Sign In
@@ -119,12 +140,16 @@ public class SignActivity extends AppCompatActivity implements SignInFragment.On
 
                 @Override
                 public void onError(String error) {
-                    Toast.makeText(getApplicationContext(), "Google Sign In failed", Toast.LENGTH_SHORT).show();
+                    showMessage("Google Sign In failed");
 
                 }
             });
 
         }
+    }
+
+    private void showMessage(String error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
     }
 
 
