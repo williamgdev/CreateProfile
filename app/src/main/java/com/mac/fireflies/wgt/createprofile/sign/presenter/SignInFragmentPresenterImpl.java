@@ -3,8 +3,7 @@ package com.mac.fireflies.wgt.createprofile.sign.presenter;
 import android.content.Intent;
 
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
-import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignInFragmentView;
 
@@ -42,9 +41,9 @@ public class SignInFragmentPresenterImpl extends SignFragmentPresenterAbst imple
     @Override
     public void signIn(String email, String password) {
         appCoreInteractor = AppCoreInteractor.getInstance();
-        appCoreInteractor.signIn(email, password, new AppCoreInteractor.AppCoreListener<W2TUser>() {
+        appCoreInteractor.signIn(email, password, new AppCoreInteractor.AppCoreListener<User>() {
             @Override
-            public void onResult(W2TUser result) {
+            public void onResult(User result) {
                 view.hideProgress();
                 view.onLoginSuccessful(result);
             }

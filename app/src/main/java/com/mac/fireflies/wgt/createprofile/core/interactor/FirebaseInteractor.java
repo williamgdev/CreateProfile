@@ -1,7 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.core.interactor;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -24,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 
@@ -42,8 +41,9 @@ public class FirebaseInteractor {
     private static final String DATABASE_NAME = "w2t_profile";
     private static final String IMAGES_PATH = "images/";
     private final FirebaseAuth mAuth;
+    public String currentPhoneVerificationId;
 
-    private W2TUser currentUser;
+    private User currentUser;
 
     public static FirebaseInteractor getInstance() {
         return ourInstance;
@@ -158,9 +158,9 @@ public class FirebaseInteractor {
         });
     }
 
-    public W2TUser getCurrentUser() {
+    public User getCurrentUser() {
         if (mAuth.getCurrentUser() != null) {
-            currentUser = W2TUser.create(mAuth.getCurrentUser());
+            currentUser = User.create(mAuth.getCurrentUser());
             return currentUser;
         } else {
             return currentUser = null;
@@ -172,7 +172,7 @@ public class FirebaseInteractor {
         return currentUser != null;
     }
 
-    public void signIn(String email, String password, final FirebaseListener<W2TUser> listener) {
+    public void signIn(String email, String password, final FirebaseListener<User> listener) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -187,13 +187,13 @@ public class FirebaseInteractor {
                 });
     }
 
-    public void signUp(String email, String password, final FirebaseListener<W2TUser> listener) {
+    public void signUp(String email, String password, final FirebaseListener<User> listener) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            currentUser = W2TUser.create(mAuth.getCurrentUser());
+                            currentUser = User.create(mAuth.getCurrentUser());
                             listener.onResult(currentUser);
                         } else {
                             listener.onError(task.getException().getMessage());
@@ -202,13 +202,13 @@ public class FirebaseInteractor {
                 });
     }
 
-    public void signInWithGoogle(AuthCredential credential, final FirebaseListener<W2TUser> listener) {
+    public void signInWithGoogle(AuthCredential credential, final FirebaseListener<User> listener) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            currentUser = W2TUser.create(mAuth.getCurrentUser());
+                            currentUser = User.create(mAuth.getCurrentUser());
                             listener.onResult(currentUser);
                         } else {
                             listener.onError(task.getException().getMessage());
@@ -217,20 +217,21 @@ public class FirebaseInteractor {
                 });
     }
 
-    public void signInWithPhone(String phoneNumber, Activity activity, final FirebaseListener<W2TUser> listener) {
+    public void signInWithPhone(String phoneNumber, Activity activity, final FirebaseListener<User> listener) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,              // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 activity,           // Activity (for callback binding)
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
                     @Override
                     public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                         mAuth.signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    currentUser = W2TUser.create(mAuth.getCurrentUser());
+                                    currentUser = User.create(mAuth.getCurrentUser());
                                     listener.onResult(currentUser);
                                 } else {
                                     listener.onError(task.getException().getMessage());
@@ -250,7 +251,28 @@ public class FirebaseInteractor {
                         super.onCodeAutoRetrievalTimeOut(s);
                         listener.onError(s);
                     }
+
+                    @Override
+                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        super.onCodeSent(verificationId, forceResendingToken);
+                        currentPhoneVerificationId = verificationId;
+                    }
                 });
+    }
+    
+    public void verifyPhoneCode(String phoneCode, final FirebaseListener<User> listener) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(currentPhoneVerificationId, phoneCode);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    currentUser = User.create(mAuth.getCurrentUser());
+                    listener.onResult(currentUser);
+                } else {
+                    listener.onError(task.getException().getMessage());
+                }
+            }
+        });
     }
 
     public interface FirebaseListener<T> {

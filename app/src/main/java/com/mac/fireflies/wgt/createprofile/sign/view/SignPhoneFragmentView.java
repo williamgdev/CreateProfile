@@ -1,6 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.sign.view;
 
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 
 /**
  * Created by willimail on 2/25/18.
@@ -9,5 +9,5 @@ import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
 public interface SignPhoneFragmentView extends SignView{
     void phoneCodeAction();
 
-    void onLoginSuccessful(W2TUser result);
+    void onLoginSuccessful(User result);
 }

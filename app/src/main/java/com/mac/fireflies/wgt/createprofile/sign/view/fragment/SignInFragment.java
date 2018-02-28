@@ -8,9 +8,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.common.SignInButton;
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenterImpl;
@@ -102,7 +101,7 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     }
 
     @Override
-    public void onLoginSuccessful(W2TUser user) {
+    public void onLoginSuccessful(User user) {
         mListener.onLoginSuccessful(user);
     }
 
@@ -113,7 +112,7 @@ public class SignInFragment extends SignFragment implements SignInFragmentView {
     }
 
     public interface OnFragmentInteractionListener {
-        void onLoginSuccessful(W2TUser user);
+        void onLoginSuccessful(User user);
 
     }
 }

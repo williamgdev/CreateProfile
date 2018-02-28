@@ -3,7 +3,7 @@ package com.mac.fireflies.wgt.createprofile.sign.presenter;
 import android.content.Intent;
 
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignPhoneFragmentView;
 
 /**
@@ -37,21 +37,23 @@ public class SignPhonePresenterImpl implements SignPhonePresenter {
 
     @Override
     public void sendVerificationCode(String phoneNumber) {
-        appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), new AppCoreInteractor.AppCoreListener<W2TUser>() {
-            @Override
-            public void onResult(W2TUser result) {
-                view.onLoginSuccessful(result);
-            }
-
-            @Override
-            public void onError(String error) {
-                view.showText(error);
-            }
-        });
+        appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), signPhoneListener);
     }
 
     @Override
     public void verifyCode(String code) {
-
+        appCoreInteractor.verifyPhoneCode(code, signPhoneListener);
     }
+
+    private AppCoreInteractor.AppCoreListener<User> signPhoneListener = new AppCoreInteractor.AppCoreListener<User>() {
+        @Override
+        public void onResult(User result) {
+            view.onLoginSuccessful(result);
+        }
+
+        @Override
+        public void onError(String error) {
+            view.showText(error);
+        }
+    };
 }

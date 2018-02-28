@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignInFragmentPresenterImpl;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignUpFragmentPresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignUpFragmentPresenterImpl;
@@ -146,11 +146,11 @@ public class SignUpFragment extends SignFragment implements SignUpFragmentView{
     }
 
     @Override
-    public void onSingUpSuccessful(W2TUser user) {
+    public void onSingUpSuccessful(User user) {
         mListener.onSignUpSuccessful(user);
     }
 
     public interface OnSignUpListener {
-        void onSignUpSuccessful(W2TUser user);
+        void onSignUpSuccessful(User user);
     }
 }

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodeState;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.State;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
@@ -88,21 +88,21 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
 
     @Override
     public void phoneCodeAction() {
+        state.phoneCodeAction(txtPhoneNumber.getText().toString());
         switch (state.getClass().getSimpleName()) {
             case "SendCodeState":
-                state.phoneCodeAction(txtPhoneNumber.getText().toString());
                 state = new VerifyCodeState(txtTitle, sendCodeButton, presenter);
                 break;
 
             case "VerifyCodeState":
-                // @TODO see what we need to do
+                state = null;
                 break;
         }
 
     }
 
     @Override
-    public void onLoginSuccessful(W2TUser result) {
+    public void onLoginSuccessful(User result) {
         mListener.onPhoneLoginSuccessful(result);
     }
 
@@ -157,7 +157,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
      */
     public interface OnSignPhoneFragmentListener {
         // TODO: Update argument type and name
-        void onPhoneLoginSuccessful(W2TUser uri);
+        void onPhoneLoginSuccessful(User uri);
     }
 
 }

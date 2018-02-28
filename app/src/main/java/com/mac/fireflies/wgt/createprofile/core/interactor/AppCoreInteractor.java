@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 
 /**
@@ -39,7 +39,7 @@ public class AppCoreInteractor {
     }
 
     private boolean isGoogleProvider() {
-        return firebaseInteractor.getCurrentUser() != null && firebaseInteractor.getCurrentUser().getProvider().equals(W2TUser.PROVIDER_GOOGLE);
+        return firebaseInteractor.getCurrentUser() != null && firebaseInteractor.getCurrentUser().getProvider().equals(User.PROVIDER_GOOGLE);
     }
 
     public boolean isUserLogged(Context context) {
@@ -53,7 +53,7 @@ public class AppCoreInteractor {
         return userLogged;
     }
 
-    public W2TUser getCurrentUser() {
+    public User getCurrentUser() {
         return firebaseInteractor.getCurrentUser();
     }
 
@@ -127,10 +127,10 @@ public class AppCoreInteractor {
         });
     }
 
-    public void signIn(String email, String password, final AppCoreListener<W2TUser> appCoreListener) {
-        firebaseInteractor.signIn(email, password, new FirebaseInteractor.FirebaseListener<W2TUser>() {
+    public void signIn(String email, String password, final AppCoreListener<User> appCoreListener) {
+        firebaseInteractor.signIn(email, password, new FirebaseInteractor.FirebaseListener<User>() {
             @Override
-            public void onResult(W2TUser result) {
+            public void onResult(User result) {
                 appCoreListener.onResult(result);
             }
 
@@ -141,10 +141,10 @@ public class AppCoreInteractor {
         });
     }
 
-    public void signUp(String mEmail, String mPassword, final AppCoreListener<W2TUser> appCoreListener) {
-        firebaseInteractor.signUp(mEmail, mPassword, new FirebaseInteractor.FirebaseListener<W2TUser>() {
+    public void signUp(String mEmail, String mPassword, final AppCoreListener<User> appCoreListener) {
+        firebaseInteractor.signUp(mEmail, mPassword, new FirebaseInteractor.FirebaseListener<User>() {
             @Override
-            public void onResult(W2TUser result) {
+            public void onResult(User result) {
                 appCoreListener.onResult(result);
             }
 
@@ -155,10 +155,10 @@ public class AppCoreInteractor {
         });
     }
 
-    public void signInWithGoogle(AuthCredential credential, final AppCoreListener<W2TUser> appCoreListener) {
-        firebaseInteractor.signInWithGoogle(credential, new FirebaseInteractor.FirebaseListener<W2TUser>() {
+    public void signInWithGoogle(AuthCredential credential, final AppCoreListener<User> appCoreListener) {
+        firebaseInteractor.signInWithGoogle(credential, new FirebaseInteractor.FirebaseListener<User>() {
             @Override
-            public void onResult(W2TUser result) {
+            public void onResult(User result) {
                 appCoreListener.onResult(result);
             }
 
@@ -187,10 +187,24 @@ public class AppCoreInteractor {
         return googleInteractor.getSignIntent(context);
     }
 
-    public void signInWithPhone(String phoneNumber, Activity activity, final AppCoreListener<W2TUser> listener) {
-        firebaseInteractor.signInWithPhone(phoneNumber, activity, new FirebaseInteractor.FirebaseListener<W2TUser>() {
+    public void signInWithPhone(String phoneNumber, Activity activity, final AppCoreListener<User> listener) {
+        firebaseInteractor.signInWithPhone(phoneNumber, activity, new FirebaseInteractor.FirebaseListener<User>() {
             @Override
-            public void onResult(W2TUser result) {
+            public void onResult(User result) {
+                listener.onResult(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                listener.onError(error);
+            }
+        });
+    }
+
+    public void verifyPhoneCode(String code, final AppCoreListener<User> listener) {
+        firebaseInteractor.verifyPhoneCode(code, new FirebaseInteractor.FirebaseListener<User>() {
+            @Override
+            public void onResult(User result) {
                 listener.onResult(result);
             }
 

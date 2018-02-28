@@ -14,7 +14,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
-import com.mac.fireflies.wgt.createprofile.core.model.W2TUser;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignPhoneFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
@@ -124,9 +124,9 @@ public class SignActivity extends AppCompatActivity
                 public void onResult(GoogleSignInAccount result) {
                     appCoreInteractor.signInWithGoogle(
                             GoogleAuthProvider.getCredential(result.getIdToken(), null),
-                            new AppCoreInteractor.AppCoreListener<W2TUser>() {
+                            new AppCoreInteractor.AppCoreListener<User>() {
                                 @Override
-                                public void onResult(W2TUser result) {
+                                public void onResult(User result) {
                                     showToastAndClose(result);
                                 }
 
@@ -140,7 +140,6 @@ public class SignActivity extends AppCompatActivity
                 @Override
                 public void onError(String error) {
                     showMessage("Google Sign In failed");
-
                 }
             });
 
@@ -153,23 +152,23 @@ public class SignActivity extends AppCompatActivity
 
 
     @Override
-    public void onSignUpSuccessful(W2TUser user) {
+    public void onSignUpSuccessful(User user) {
         showToastAndClose(user);
     }
 
     @Override
-    public void onLoginSuccessful(W2TUser user) {
+    public void onLoginSuccessful(User user) {
         showToastAndClose(user);
     }
 
-    private void showToastAndClose(W2TUser user) {
+    private void showToastAndClose(User user) {
         Toast.makeText(this, "Here: " + user.getName(), Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
-    public void onPhoneLoginSuccessful(W2TUser uri) {
-        showMessage("Login Successful");
+    public void onPhoneLoginSuccessful(User user) {
+        showToastAndClose(user);
     }
 }
 

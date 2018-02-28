@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Created by willimail on 2/5/18.
  */
 
-public class W2TUser {
+public class User {
     public static final String PROVIDER_GOOGLE = "GOOGLE";
     public static final String PROVIDER_FIREBASE = "FIREBASE";
     public static final String PROVIDER_NONE = "NONE";
@@ -19,8 +19,8 @@ public class W2TUser {
     private String phoneNumber;
     private String provider;
 
-    public static W2TUser create(FirebaseUser user) {
-        W2TUser w2TUser = new W2TUser();
+    public static User create(FirebaseUser user) {
+        User w2TUser = new User();
         w2TUser.setEmail(user.getEmail());
         w2TUser.setName(user.getDisplayName());
         w2TUser.setUID(user.getUid());
