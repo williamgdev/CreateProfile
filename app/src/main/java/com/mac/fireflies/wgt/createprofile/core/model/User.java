@@ -10,8 +10,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class User {
     public static final String PROVIDER_GOOGLE = "GOOGLE";
-    public static final String PROVIDER_FIREBASE = "FIREBASE";
+    public static final String PROVIDER_PASSWORD = "PASSWORD";
     public static final String PROVIDER_NONE = "NONE";
+    public static final String PROVIDER_PHONE = "PHONE";
     private String email;
     private String name;
     private String UID;
@@ -19,31 +20,36 @@ public class User {
     private String phoneNumber;
     private String provider;
 
-    public static User create(FirebaseUser user) {
-        User w2TUser = new User();
-        w2TUser.setEmail(user.getEmail());
-        w2TUser.setName(user.getDisplayName());
-        w2TUser.setUID(user.getUid());
-        w2TUser.setPhotoUrl(user.getPhotoUrl());
-        w2TUser.setPhoneNumber(user.getPhoneNumber());
-        if (user.getProviders().size() > 0) {
-            switch (user.getProviders().get(0)) {
+    public static User create(FirebaseUser firebaseUser) {
+        User user = new User();
+        user.setEmail(firebaseUser.getEmail());
+        user.setName(firebaseUser.getDisplayName());
+        user.setUID(firebaseUser.getUid());
+        user.setPhotoUrl(firebaseUser.getPhotoUrl());
+        user.setPhoneNumber(firebaseUser.getPhoneNumber());
+        if (firebaseUser.getProviders().size() > 0) {
+            switch (firebaseUser.getProviders().get(0)) {
                 case "google.com":
-                    w2TUser.setProvider(PROVIDER_GOOGLE);
+                    user.setProvider(PROVIDER_GOOGLE);
                     break;
 
                 case "password":
-                    w2TUser.setProvider(PROVIDER_FIREBASE);
+                    user.setProvider(PROVIDER_PASSWORD);
+                    break;
+
+                case "phone":
+                    user.setProvider(PROVIDER_PHONE);
+                    user.setPhoneNumber(firebaseUser.getPhoneNumber());
                     break;
 
                 default:
-                    w2TUser.setProvider(PROVIDER_NONE);
+                    user.setProvider(PROVIDER_NONE);
                     break;
             }
         } else {
-            w2TUser.setProvider(PROVIDER_NONE);
+            user.setProvider(PROVIDER_NONE);
         }
-        return w2TUser;
+        return user;
     }
 
     public void setEmail(String email) {

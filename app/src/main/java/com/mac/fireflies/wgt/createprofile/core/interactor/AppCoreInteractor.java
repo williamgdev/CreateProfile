@@ -187,8 +187,13 @@ public class AppCoreInteractor {
         return googleInteractor.getSignIntent(context);
     }
 
-    public void signInWithPhone(String phoneNumber, Activity activity, final AppCoreListener<User> listener) {
-        firebaseInteractor.signInWithPhone(phoneNumber, activity, new FirebaseInteractor.FirebaseListener<User>() {
+    public void signInWithPhone(String phoneNumber, Activity activity, final AppCoreListener<User> listener, final SentCodeListener sentCodeListener) {
+        firebaseInteractor.signInWithPhone(phoneNumber, activity, new FirebaseInteractor.PhoneListener() {
+            @Override
+            public void onCodeSent() {
+                sentCodeListener.onCodeSent();
+            }
+
             @Override
             public void onResult(User result) {
                 listener.onResult(result);
@@ -215,8 +220,21 @@ public class AppCoreInteractor {
         });
     }
 
+    public String retrieveUserInfoByProvider() {
+        switch (getCurrentUser().getProvider()) {
+            case User.PROVIDER_PHONE:
+                return getCurrentUser().getPhoneNumber();
+            default:
+                return getCurrentUser().getEmail();
+        }
+    }
+
     public interface AppCoreListener<T> {
         void onResult(T result);
         void onError(String error);
+    }
+
+    public interface SentCodeListener {
+        void onCodeSent();
     }
 }

@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by wiltorri on 1/27/18.
  */
 
-public class W2TUtil {
+public class CoreUtil {
     public static String generateKey(String pass) {
         String password = null;
         MessageDigest mdEnc;

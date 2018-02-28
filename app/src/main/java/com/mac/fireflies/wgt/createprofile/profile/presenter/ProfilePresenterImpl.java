@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
-import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 import com.mac.fireflies.wgt.createprofile.profile.view.ProfileView;
 
@@ -41,7 +41,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
                     profileView.setProfile(currentProfile.getName(), currentProfile.getEmail());
                     loadPhoto();
                 } else {
-                    profileView.setInfo(appCoreInteractor.getCurrentUser().getEmail());
+                    profileView.setInfo(appCoreInteractor.retrieveUserInfoByProvider());
                 }
             }
 
@@ -58,7 +58,7 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     @Override
     public void displayLoggedUser() {
-        profileView.setInfo(appCoreInteractor.getCurrentUser().getEmail());
+        profileView.setInfo(appCoreInteractor.retrieveUserInfoByProvider());
     }
 
     @Override

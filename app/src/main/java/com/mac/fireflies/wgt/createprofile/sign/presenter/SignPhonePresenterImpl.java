@@ -37,7 +37,13 @@ public class SignPhonePresenterImpl implements SignPhonePresenter {
 
     @Override
     public void sendVerificationCode(String phoneNumber) {
-        appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), signPhoneListener);
+        view.showProgress(true);
+        appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), signPhoneListener, new AppCoreInteractor.SentCodeListener() {
+            @Override
+            public void onCodeSent() {
+                view.hideProgress();
+            }
+        });
     }
 
     @Override
@@ -49,11 +55,13 @@ public class SignPhonePresenterImpl implements SignPhonePresenter {
         @Override
         public void onResult(User result) {
             view.onLoginSuccessful(result);
+            view.hideProgress();
         }
 
         @Override
         public void onError(String error) {
             view.showText(error);
+            view.hideProgress();
         }
     };
 }

@@ -143,6 +143,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        state = new VerifyCodeState(txtTitle, sendCodeButton, presenter);
     }
 
     /**

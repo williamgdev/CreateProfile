@@ -24,7 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
-import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
+import com.mac.fireflies.wgt.createprofile.core.util.CoreUtil;
 import com.mac.fireflies.wgt.createprofile.profile.model.Profile;
 
 import java.util.Map;
@@ -60,7 +60,7 @@ public class FirebaseInteractor {
     public void savePhotoProfile(Profile profile, Bitmap bitmap, final FirebaseListener<Uri> listener) {
         if (!profile.getPhoto().equals(Profile.DEFAULT_PHOTO)) {
             StorageReference storage = getStorage().child(IMAGES_PATH + profile.getPhoto());
-            UploadTask uploadTask = storage.putBytes(W2TUtil.convertImageFromBMPToByte(bitmap));
+            UploadTask uploadTask = storage.putBytes(CoreUtil.convertImageFromBMPToByte(bitmap));
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -116,7 +116,7 @@ public class FirebaseInteractor {
     }
 
     public void getProfile(String email, final FirebaseListener<Profile> listener) {
-        String key = W2TUtil.generateKey(email);
+        String key = CoreUtil.generateKey(email);
         //@TODO Check why DatabaseValueEventListener is not working offline
         getDatabase().child(key).addValueEventListener(new ValueEventListener() {
             @Override
@@ -217,7 +217,7 @@ public class FirebaseInteractor {
                 });
     }
 
-    public void signInWithPhone(String phoneNumber, Activity activity, final FirebaseListener<User> listener) {
+    public void signInWithPhone(String phoneNumber, Activity activity, final PhoneListener listener) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,              // Timeout duration
@@ -256,11 +256,16 @@ public class FirebaseInteractor {
                     public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(verificationId, forceResendingToken);
                         currentPhoneVerificationId = verificationId;
+                        listener.onCodeSent();
                     }
                 });
     }
     
     public void verifyPhoneCode(String phoneCode, final FirebaseListener<User> listener) {
+        if (currentPhoneVerificationId == null) {
+            listener.onError("The code provided for verification is not a valid code");
+            return;
+        }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(currentPhoneVerificationId, phoneCode);
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -279,5 +284,9 @@ public class FirebaseInteractor {
         void onResult(T result);
 
         void onError(String error);
+    }
+
+    public interface PhoneListener extends FirebaseListener<User>{
+        void onCodeSent();
     }
 }
