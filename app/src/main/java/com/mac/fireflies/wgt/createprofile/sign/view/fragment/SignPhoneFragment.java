@@ -89,6 +89,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void phoneCodeAction() {
         state.phoneCodeAction(txtPhoneNumber.getText().toString());
+        txtPhoneNumber.setText("");
         switch (state.getClass().getSimpleName()) {
             case "SendCodeState":
                 state = new VerifyCodeState(txtTitle, sendCodeButton, presenter);

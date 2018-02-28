@@ -162,7 +162,7 @@ public class SignActivity extends AppCompatActivity
     }
 
     private void showToastAndClose(User user) {
-        Toast.makeText(this, "Here: " + user.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Welcome: " + appCoreInteractor.retrieveUserInfoByProvider(), Toast.LENGTH_SHORT).show();
         finish();
     }
 
