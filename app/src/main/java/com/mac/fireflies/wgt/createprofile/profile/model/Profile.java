@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mac.fireflies.wgt.createprofile.core.util.W2TUtil;
+import com.mac.fireflies.wgt.createprofile.core.util.CoreUtil;
 
 
 /**
@@ -24,7 +24,7 @@ public class Profile implements Serializable {
 
     public String getKey() {
         if (key == null) {
-            key = W2TUtil.generateKey(email);
+            key = CoreUtil.generateKey(email);
         }
         return key;
     }
