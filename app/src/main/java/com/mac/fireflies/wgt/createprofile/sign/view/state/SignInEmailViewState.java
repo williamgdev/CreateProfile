@@ -28,7 +28,7 @@ public class SignInEmailViewState implements SignEmailViewState {
     }
 
     @Override
-    public void sendFields() {
+    public void sendFieldsToPresenter() {
         Map<String, String> fields = new HashMap<>();
         fields.put(SignEmailPresenter.FIELD_EMAIL, txtEmail.getText().toString());
         fields.put(SignEmailPresenter.FIELD_PASSWORD, txtPassword.getText().toString());
@@ -41,7 +41,7 @@ public class SignInEmailViewState implements SignEmailViewState {
     }
 
     @Override
-    public void attemptAction() {
+    public void attemptSignAction() {
         presenter.attemptLogin();
     }
 

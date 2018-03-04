@@ -91,7 +91,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         @Override
         public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                state.attemptAction();
+                state.attemptSignAction();
                 return true;
             }
             return false;
@@ -101,7 +101,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            state.attemptAction();
+            state.attemptSignAction();
         }
     };
 
@@ -126,6 +126,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -168,7 +169,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
 
     @Override
     public void sendFieldsToPresenterFromState() {
-        state.sendFields();
+        state.sendFieldsToPresenter();
     }
 
     @Override
@@ -290,11 +291,11 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
 
     @Override
     public void onLoginSuccessful() {
-        onSignWithEmailListener.onLoginSuccessful();
+        onSignWithEmailListener.onSignInSuccessful();
     }
 
     public interface OnSignWithEmailListener {
-        void onLoginSuccessful();
+        void onSignInSuccessful();
         void onSignUpSuccessful();
     }
 }

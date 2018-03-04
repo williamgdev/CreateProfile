@@ -214,7 +214,6 @@ public class SignEmailPresenterImpl implements SignEmailPresenter, LoaderManager
 
     private void signUp() {
         view.showProgress();
-        appCoreInteractor = AppCoreInteractor.getInstance();
         appCoreInteractor.signUp(mEmail, mPassword, new AppCoreInteractor.AppCoreListener<User>() {
             @Override
             public void onResult(User result) {
@@ -232,7 +231,6 @@ public class SignEmailPresenterImpl implements SignEmailPresenter, LoaderManager
 
     @Override
     public void signIn(String email, String password) {
-        appCoreInteractor = AppCoreInteractor.getInstance();
         appCoreInteractor.signIn(email, password, new AppCoreInteractor.AppCoreListener<User>() {
             @Override
             public void onResult(User result) {
@@ -250,6 +248,7 @@ public class SignEmailPresenterImpl implements SignEmailPresenter, LoaderManager
     @Override
     public void attachView(SignEmailFragmentView view) {
         this.view = view;
+        appCoreInteractor = AppCoreInteractor.getInstance();
     }
 
     @Override

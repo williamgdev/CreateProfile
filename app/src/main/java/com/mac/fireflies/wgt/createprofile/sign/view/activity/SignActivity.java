@@ -137,7 +137,7 @@ public class SignActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoginSuccessful() {
+    public void onSignInSuccessful() {
         showToastAndClose();
     }
 
