@@ -10,6 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
@@ -19,6 +27,8 @@ import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPresenterImpl;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignView;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignEmailFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignPhoneFragment;
+
+import java.util.Arrays;
 
 /**
  * A login screen that offers login via email/password.
@@ -35,6 +45,7 @@ public class SignActivity extends AppCompatActivity
     protected View progressBar;
     private SignPresenter presenter;
     private boolean isSignUp;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +85,32 @@ public class SignActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 launchSignPhoneFragment();
+            }
+        });
+        callbackManager = CallbackManager.Factory.create();
+        LoginButton facebookLoginButton = findViewById(R.id.facebook_login_button);
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                showText(loginResult.toString());
+
+                // User Logged
+                boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
+                // User Profile
+                Profile profile = Profile.getCurrentProfile();
+            }
+
+            @Override
+            public void onCancel() {
+                showText("Facebook Login Cancelled");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                showText("Facebook Login found an error: " + error.toString());
+
+
             }
         });
         progressBar = findViewById(R.id.progressBar);
@@ -128,6 +165,8 @@ public class SignActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN_GOOGLE) {
             presenter.loadData(data);
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
