@@ -10,24 +10,23 @@ import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
  * Created by willimail on 2/25/18.
  */
 
-
-public class SendCodeState implements State{
+public class VerifyCodePhoneViewState implements PhoneViewState {
 
     private final SignPhonePresenter presenter;
 
-    public SendCodeState(TextView txtTitle, Button sendCodeButton, SignPhonePresenter presenter) {
+    public VerifyCodePhoneViewState(TextView txtTitle, Button sendCodeButton, SignPhonePresenter presenter) {
         this.presenter = presenter;
         setTitle(txtTitle, sendCodeButton);
     }
 
     @Override
-    public void phoneCodeAction(String phoneNumber) {
-        presenter.sendVerificationCode(phoneNumber);
+    public void phoneCodeAction(String code) {
+        presenter.verifyCode(code);
     }
 
     @Override
     public void setTitle(TextView title, Button button) {
-        title.setText(R.string.enter_phone_number);
-        button.setText(R.string.send_me_the_code);
+        title.setText(R.string.enter_verification_code);
+        button.setText(R.string.verify_code);
     }
 }
