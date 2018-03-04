@@ -19,6 +19,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
@@ -99,6 +101,19 @@ public class SignActivity extends AppCompatActivity
                 boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
                 // User Profile
                 Profile profile = Profile.getCurrentProfile();
+
+                AuthCredential credential = FacebookAuthProvider.getCredential(AccessToken.getCurrentAccessToken().getToken());
+                appCoreInteractor.signInWithGoogle(credential, new AppCoreInteractor.AppCoreListener<User>() {
+                    @Override
+                    public void onResult(User result) {
+                        showText(result.getEmail());
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        showText(error);
+                    }
+                });
             }
 
             @Override
