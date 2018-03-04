@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenter;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenterImpl;
@@ -38,6 +40,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         homePresenter = new HomePresenterImpl();
         homePresenter.attachView(this);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
 
     }
 
