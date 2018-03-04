@@ -13,16 +13,16 @@ import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
-import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodeState;
-import com.mac.fireflies.wgt.createprofile.sign.view.state.State;
+import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodePhoneViewState;
+import com.mac.fireflies.wgt.createprofile.sign.view.state.PhoneViewState;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenterImpl;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignPhoneFragmentView;
-import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodeState;
+import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodePhoneViewState;
 
 public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView {
     SignPhonePresenter presenter;
-    State state;
+    PhoneViewState phoneViewState;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,21 +82,21 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
                 phoneCodeAction();
             }
         });
-        state = new SendCodeState(txtTitle, sendCodeButton, presenter);
+        phoneViewState = new SendCodePhoneViewState(txtTitle, sendCodeButton, presenter);
         return view;
     }
 
     @Override
     public void phoneCodeAction() {
-        state.phoneCodeAction(txtPhoneNumber.getText().toString());
+        phoneViewState.phoneCodeAction(txtPhoneNumber.getText().toString());
         txtPhoneNumber.setText("");
-        switch (state.getClass().getSimpleName()) {
-            case "SendCodeState":
-                state = new VerifyCodeState(txtTitle, sendCodeButton, presenter);
+        switch (phoneViewState.getClass().getSimpleName()) {
+            case "SendCodePhoneViewState":
+                phoneViewState = new VerifyCodePhoneViewState(txtTitle, sendCodeButton, presenter);
                 break;
 
-            case "VerifyCodeState":
-                state = null;
+            case "VerifyCodePhoneViewState":
+                phoneViewState = null;
                 break;
         }
 
@@ -128,7 +128,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     }
 
     @Override
-    public void showProgress(boolean b) {
+    public void showProgress() {
 
     }
 
@@ -144,7 +144,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-        state = new VerifyCodeState(txtTitle, sendCodeButton, presenter);
+        phoneViewState = new VerifyCodePhoneViewState(txtTitle, sendCodeButton, presenter);
     }
 
     /**

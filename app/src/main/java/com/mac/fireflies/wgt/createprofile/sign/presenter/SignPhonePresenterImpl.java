@@ -37,7 +37,7 @@ public class SignPhonePresenterImpl implements SignPhonePresenter {
 
     @Override
     public void sendVerificationCode(String phoneNumber) {
-        view.showProgress(true);
+        view.showProgress();
         appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), signPhoneListener, new AppCoreInteractor.SentCodeListener() {
             @Override
             public void onCodeSent() {

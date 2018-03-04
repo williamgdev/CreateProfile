@@ -95,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
     }
 
     @Override
-    public void showProgress(boolean b) {
+    public void showProgress() {
 
     }
 

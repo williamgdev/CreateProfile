@@ -9,7 +9,7 @@ import android.content.Context;
 
 public interface BaseView {
 
-    void showProgress(boolean b);
+    void showProgress();
 
 
     void hideProgress();
