@@ -1,6 +1,8 @@
 package com.mac.fireflies.wgt.createprofile.sign.view;
 
 
+import android.widget.ArrayAdapter;
+
 import com.mac.fireflies.wgt.createprofile.core.BaseView;
 
 /**
@@ -9,4 +11,15 @@ import com.mac.fireflies.wgt.createprofile.core.BaseView;
 
 public interface SignView extends BaseView {
 
+    void launchSignPhoneFragment();
+
+    void signInWithGoogle();
+
+    void launchSignWithEmailFragment();
+
+    void hideSignUpLinkLayout();
+
+    void hideSignInLayout();
+
+    void onLoginWithGoogleSuccessfull();
 }

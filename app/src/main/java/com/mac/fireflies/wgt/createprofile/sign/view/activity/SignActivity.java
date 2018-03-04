@@ -1,5 +1,6 @@
 package com.mac.fireflies.wgt.createprofile.sign.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,39 +10,43 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
-import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignInFragment;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPresenter;
+import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPresenterImpl;
+import com.mac.fireflies.wgt.createprofile.sign.view.SignView;
+import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignEmailFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignPhoneFragment;
-import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignUpFragment;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class SignActivity extends AppCompatActivity
-        implements SignInFragment.OnFragmentInteractionListener,
-        SignUpFragment.OnSignUpListener, SignPhoneFragment.OnSignPhoneFragmentListener{
+        implements SignView, SignEmailFragment.OnSignWithEmailListener, SignPhoneFragment.OnSignPhoneFragmentListener{
 
     private static final int RC_SIGN_IN_GOOGLE = 600;
     private LinearLayout signInButtonsLayout;
     private AppCoreInteractor appCoreInteractor;
     private View signUpLinkLayout;
 
+
+    protected View progressBar;
+    private SignPresenter presenter;
+    private boolean isSignUp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
-        signInButtonsLayout = findViewById(R.id.sign_in_buttons);
+        signInButtonsLayout = (LinearLayout) findViewById(R.id.sign_in_buttons);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchSignInFragment();
+                launchSignWithEmailFragment();
             }
         });
 
@@ -50,7 +55,8 @@ public class SignActivity extends AppCompatActivity
         signUpLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSignUpFragment();
+                isSignUp = true;
+                launchSignWithEmailFragment();
             }
         });
 
@@ -70,10 +76,14 @@ public class SignActivity extends AppCompatActivity
                 launchSignPhoneFragment();
             }
         });
+        progressBar = findViewById(R.id.progressBar);
         appCoreInteractor = AppCoreInteractor.getInstance();
+        presenter = new SignPresenterImpl();
+        presenter.attachView(this);
     }
 
-    private void launchSignPhoneFragment() {
+    @Override
+    public void launchSignPhoneFragment() {
         hideSignUpLinkLayout();
         hideSignInLayout();
         SignPhoneFragment fragment = SignPhoneFragment.newInstance("", "");
@@ -83,92 +93,90 @@ public class SignActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void signInWithGoogle() {// Configure Google Sign In
+    @Override
+    public void signInWithGoogle() {// Configure Google Sign In
         startActivityForResult(appCoreInteractor.getGoogleSignIntent(getApplicationContext()), RC_SIGN_IN_GOOGLE);
     }
 
-    public void launchSignInFragment() {
+    @Override
+    public void launchSignWithEmailFragment() {
         hideSignInLayout();
-        SignInFragment fragment = SignInFragment.newInstance("", "");
+        SignEmailFragment fragment = SignEmailFragment.newInstance(isSignUp);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_sign, fragment)
                 .commit();
     }
 
-    private void launchSignUpFragment() {
-        hideSignInLayout();
-        hideSignUpLinkLayout();
-        SignUpFragment fragment = new SignUpFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_sign, fragment)
-                .commit();
-    }
-
-    private void hideSignUpLinkLayout() {
+    @Override
+    public void hideSignUpLinkLayout() {
         signUpLinkLayout.setVisibility(View.GONE);
     }
 
+    @Override
     public void hideSignInLayout() {
         signInButtonsLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoginWithGoogleSuccessfull() {
+        showToastAndClose();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN_GOOGLE) {
-            appCoreInteractor = AppCoreInteractor.getInstance();
-            appCoreInteractor.getGoogleAccount(data, new AppCoreInteractor.AppCoreListener<GoogleSignInAccount>() {
-                @Override
-                public void onResult(GoogleSignInAccount result) {
-                    appCoreInteractor.signInWithGoogle(
-                            GoogleAuthProvider.getCredential(result.getIdToken(), null),
-                            new AppCoreInteractor.AppCoreListener<User>() {
-                                @Override
-                                public void onResult(User result) {
-                                    showToastAndClose(result);
-                                }
-
-                                @Override
-                                public void onError(String error) {
-                                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-
-                @Override
-                public void onError(String error) {
-                    showMessage("Google Sign In failed");
-                }
-            });
-
+            presenter.loadData(data);
         }
     }
 
-    private void showMessage(String error) {
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-    }
-
-
     @Override
-    public void onSignUpSuccessful(User user) {
-        showToastAndClose(user);
+    public void onSignUpSuccessful() {
+        showToastAndClose();
     }
 
     @Override
-    public void onLoginSuccessful(User user) {
-        showToastAndClose(user);
+    public void onSignInSuccessful() {
+        showToastAndClose();
     }
 
-    private void showToastAndClose(User user) {
+    private void showToastAndClose() {
         Toast.makeText(this, "Welcome: " + appCoreInteractor.retrieveUserInfoByProvider(), Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void onPhoneLoginSuccessful(User user) {
-        showToastAndClose(user);
+        showToastAndClose();
     }
-}
 
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        findViewById(R.id.container_layout).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+        findViewById(R.id.container_layout).setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void setInfo(String email) {
+        // @TODO Implement StatusBar
+    }
+
+    @Override
+    public void showText(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+}

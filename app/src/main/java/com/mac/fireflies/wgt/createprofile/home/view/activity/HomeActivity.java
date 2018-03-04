@@ -42,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void showProgress(boolean b) {
+    public void showProgress() {
 
     }
 

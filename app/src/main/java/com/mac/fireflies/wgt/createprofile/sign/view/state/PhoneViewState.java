@@ -7,7 +7,7 @@ import android.widget.TextView;
  * Created by willimail on 2/25/18.
  */
 
-public interface State {
+public interface PhoneViewState {
 
     void phoneCodeAction(String phoneNumber);
 
