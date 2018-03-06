@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
-import com.mac.fireflies.wgt.createprofile.core.interactor.FirebaseInteractor;
 
 /**
  * Created by Alestar on 2/1/2018.
@@ -54,7 +53,7 @@ public class HomePresenterImpl implements HomePresenter {
     public void attachView(HomeView view) {
         this.view=view;
         this.appCoreInteractor = AppCoreInteractor.getInstance();
-
+        appCoreInteractor.initializeFacebook(view.getActivity());
     }
 
     @Override

@@ -89,49 +89,25 @@ public class SignActivity extends AppCompatActivity
                 launchSignPhoneFragment();
             }
         });
+        progressBar = findViewById(R.id.progressBar);
         callbackManager = CallbackManager.Factory.create();
         LoginButton facebookLoginButton = findViewById(R.id.facebook_login_button);
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                showText(loginResult.toString());
 
-                // User Logged
-                boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
-                // User Profile
-                Profile profile = Profile.getCurrentProfile();
-
-                AuthCredential credential = FacebookAuthProvider.getCredential(AccessToken.getCurrentAccessToken().getToken());
-                appCoreInteractor.signInWithGoogle(credential, new AppCoreInteractor.AppCoreListener<User>() {
-                    @Override
-                    public void onResult(User result) {
-                        showText(result.getEmail());
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        showText(error);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancel() {
-                showText("Facebook Login Cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                showText("Facebook Login found an error: " + error.toString());
-
-
-            }
-        });
-        progressBar = findViewById(R.id.progressBar);
-        appCoreInteractor = AppCoreInteractor.getInstance();
         presenter = new SignPresenterImpl();
         presenter.attachView(this);
+
+        appCoreInteractor = AppCoreInteractor.getInstance();
+        appCoreInteractor.registerFacebookCallBack(facebookLoginButton, callbackManager, this, new AppCoreInteractor.AppCoreListener<User>() {
+            @Override
+            public void onResult(User result) {
+                showToastAndClose();
+            }
+
+            @Override
+            public void onError(String error) {
+                showText(error);
+            }
+        });
     }
 
     @Override

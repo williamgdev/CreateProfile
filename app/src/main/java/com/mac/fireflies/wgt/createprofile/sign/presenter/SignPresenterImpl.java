@@ -29,7 +29,7 @@ public class SignPresenterImpl implements SignPresenter {
         appCoreInteractor.getGoogleAccount(data, new AppCoreInteractor.AppCoreListener<GoogleSignInAccount>() {
             @Override
             public void onResult(GoogleSignInAccount result) {
-                appCoreInteractor.signInWithGoogle(
+                appCoreInteractor.signInWithSDKCredentials(
                         GoogleAuthProvider.getCredential(result.getIdToken(), null),
                         new AppCoreInteractor.AppCoreListener<User>() {
                             @Override

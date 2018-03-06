@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenter;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenterImpl;
@@ -30,7 +28,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         txtName = (TextView) findViewById(R.id.greetings);
         bLogout = (Button) findViewById(R.id.button_logout);
@@ -40,9 +38,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         homePresenter = new HomePresenterImpl();
         homePresenter.attachView(this);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
 
     }
 

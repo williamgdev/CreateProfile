@@ -202,7 +202,7 @@ public class FirebaseInteractor {
                 });
     }
 
-    public void signInWithGoogle(AuthCredential credential, final FirebaseListener<User> listener) {
+    public void signInWithSDKCredentials(AuthCredential credential, final FirebaseListener<User> listener) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -280,7 +280,7 @@ public class FirebaseInteractor {
         });
     }
 
-    public interface FirebaseListener<T> {
+    public interface FirebaseListener<T>{
         void onResult(T result);
 
         void onError(String error);

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.facebook.CallbackManager;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
@@ -20,11 +22,13 @@ public class AppCoreInteractor {
     private static final AppCoreInteractor ourInstance = new AppCoreInteractor();
 
     private final GoogleInteractor googleInteractor;
+    private final FacebookInteractor facebookInteractor;
     FirebaseInteractor firebaseInteractor;
 
     private AppCoreInteractor() {
         firebaseInteractor = FirebaseInteractor.getInstance();
         googleInteractor = GoogleInteractor.getInstance();
+        facebookInteractor = FacebookInteractor.getInstance();
     }
 
     public static AppCoreInteractor getInstance() {
@@ -34,6 +38,8 @@ public class AppCoreInteractor {
     public void logout() {
         if (isGoogleProvider()) {
             googleInteractor.logout();
+        } else if (isFacebookProvider()) {
+            facebookInteractor.logout();
         }
         firebaseInteractor.logout();
     }
@@ -42,9 +48,16 @@ public class AppCoreInteractor {
         return firebaseInteractor.getCurrentUser() != null && firebaseInteractor.getCurrentUser().getProvider().equals(User.PROVIDER_GOOGLE);
     }
 
+    private boolean isFacebookProvider() {
+        return firebaseInteractor.getCurrentUser() != null && firebaseInteractor.getCurrentUser().getProvider().equals(User.PROVIDER_FACEBOOK);
+    }
+
     public boolean isUserLogged(Context context) {
         boolean userLogged = false;
         if (isGoogleProvider() && googleInteractor.isUserLogged(context)) {
+            userLogged = true;
+        }
+        if (isFacebookProvider() && facebookInteractor.isUserLogged()) {
             userLogged = true;
         }
         if (firebaseInteractor.isUserLogged()) {
@@ -155,8 +168,8 @@ public class AppCoreInteractor {
         });
     }
 
-    public void signInWithGoogle(AuthCredential credential, final AppCoreListener<User> appCoreListener) {
-        firebaseInteractor.signInWithGoogle(credential, new FirebaseInteractor.FirebaseListener<User>() {
+    public void signInWithSDKCredentials(AuthCredential credential, final AppCoreListener<User> appCoreListener) {
+        firebaseInteractor.signInWithSDKCredentials(credential, new FirebaseInteractor.FirebaseListener<User>() {
             @Override
             public void onResult(User result) {
                 appCoreListener.onResult(result);
@@ -224,9 +237,29 @@ public class AppCoreInteractor {
         switch (getCurrentUser().getProvider()) {
             case User.PROVIDER_PHONE:
                 return getCurrentUser().getPhoneNumber();
+            case User.PROVIDER_FACEBOOK:
+                return getCurrentUser().getName();
             default:
                 return getCurrentUser().getEmail();
         }
+    }
+
+    public void initializeFacebook(Activity activity) {
+        facebookInteractor.initialize(activity);
+    }
+
+    public void registerFacebookCallBack(LoginButton facebookLoginButton, CallbackManager callbackManager, Activity activity, final AppCoreListener<User> listener) {
+        facebookInteractor.registerCallBack(facebookLoginButton, callbackManager, activity, new FacebookInteractor.FacebookInteractorListener<AuthCredential>() {
+            @Override
+            public void onResult(AuthCredential result) {
+                signInWithSDKCredentials(result, listener);
+            }
+
+            @Override
+            public void onError(String error) {
+                listener.onError(error);
+            }
+        });
     }
 
     public interface AppCoreListener<T> {

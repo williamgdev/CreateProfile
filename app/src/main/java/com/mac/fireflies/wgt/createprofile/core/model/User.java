@@ -13,6 +13,7 @@ public class User {
     public static final String PROVIDER_PASSWORD = "PASSWORD";
     public static final String PROVIDER_NONE = "NONE";
     public static final String PROVIDER_PHONE = "PHONE";
+    public static final String PROVIDER_FACEBOOK = "FACEBOOK";
     private String email;
     private String name;
     private String UID;
@@ -35,6 +36,10 @@ public class User {
 
                 case "password":
                     user.setProvider(PROVIDER_PASSWORD);
+                    break;
+
+                case "facebook.com":
+                    user.setProvider(PROVIDER_FACEBOOK);
                     break;
 
                 case "phone":
