@@ -244,10 +244,6 @@ public class AppCoreInteractor {
         }
     }
 
-    public void initializeFacebook(Activity activity) {
-        facebookInteractor.initialize(activity);
-    }
-
     public void registerFacebookCallBack(LoginButton facebookLoginButton, CallbackManager callbackManager, Activity activity, final AppCoreListener<User> listener) {
         facebookInteractor.registerCallBack(facebookLoginButton, callbackManager, activity, new FacebookInteractor.FacebookInteractorListener<AuthCredential>() {
             @Override
