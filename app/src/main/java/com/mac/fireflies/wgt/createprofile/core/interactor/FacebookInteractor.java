@@ -2,6 +2,7 @@ package com.mac.fireflies.wgt.createprofile.core.interactor;
 
 
 import android.app.Activity;
+import android.app.Application;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -29,11 +30,6 @@ public class FacebookInteractor {
 
     private FacebookInteractor() {
 
-    }
-
-    public void initialize(Activity activity) {
-        FacebookSdk.sdkInitialize(activity);
-        AppEventsLogger.activateApp(activity);
     }
 
     public void registerCallBack(LoginButton facebookLoginButton, CallbackManager callbackManager, Activity activity, final FacebookInteractorListener<AuthCredential> listener) {

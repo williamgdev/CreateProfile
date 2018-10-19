@@ -53,7 +53,6 @@ public class HomePresenterImpl implements HomePresenter {
     public void attachView(HomeView view) {
         this.view=view;
         this.appCoreInteractor = AppCoreInteractor.getInstance();
-        appCoreInteractor.initializeFacebook(view.getActivity());
     }
 
     @Override
