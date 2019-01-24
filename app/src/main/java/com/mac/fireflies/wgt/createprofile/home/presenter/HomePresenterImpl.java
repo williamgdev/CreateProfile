@@ -2,6 +2,7 @@ package com.mac.fireflies.wgt.createprofile.home.presenter;
 
 import android.content.Intent;
 
+import com.facebook.FacebookSdk;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
 

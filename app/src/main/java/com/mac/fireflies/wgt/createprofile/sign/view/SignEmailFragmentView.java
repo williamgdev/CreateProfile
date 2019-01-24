@@ -1,11 +1,10 @@
 package com.mac.fireflies.wgt.createprofile.sign.view;
 
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 import android.widget.ArrayAdapter;
 
 import com.mac.fireflies.wgt.createprofile.core.BaseView;
-import com.mac.fireflies.wgt.createprofile.core.model.User;
 
 public interface SignEmailFragmentView extends BaseView{
 

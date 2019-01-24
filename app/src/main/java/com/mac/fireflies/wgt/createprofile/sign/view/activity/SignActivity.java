@@ -3,24 +3,16 @@ package com.mac.fireflies.wgt.createprofile.sign.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.Profile;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
@@ -29,8 +21,6 @@ import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPresenterImpl;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignView;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignEmailFragment;
 import com.mac.fireflies.wgt.createprofile.sign.view.fragment.SignPhoneFragment;
-
-import java.util.Arrays;
 
 /**
  * A login screen that offers login via email/password.

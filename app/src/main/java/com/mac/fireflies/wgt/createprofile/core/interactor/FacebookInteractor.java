@@ -33,7 +33,7 @@ public class FacebookInteractor {
     }
 
     public void registerCallBack(LoginButton facebookLoginButton, CallbackManager callbackManager, Activity activity, final FacebookInteractorListener<AuthCredential> listener) {
-        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile"));
+//        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile"));
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
