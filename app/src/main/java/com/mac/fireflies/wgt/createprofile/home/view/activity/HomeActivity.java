@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.databinding.ActivityHomeBinding;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenter;
 import com.mac.fireflies.wgt.createprofile.home.presenter.HomePresenterImpl;
 import com.mac.fireflies.wgt.createprofile.home.view.HomeView;
@@ -17,24 +18,17 @@ import com.mac.fireflies.wgt.createprofile.profile.view.activity.ProfileActivity
 import com.mac.fireflies.wgt.createprofile.sign.view.activity.SignActivity;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeView {
-
-
-    TextView txtName;
-    Button bLogout, bMyProfile;
     HomePresenter homePresenter;
+    ActivityHomeBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
-        txtName = (TextView) findViewById(R.id.greetings);
-        bLogout = (Button) findViewById(R.id.button_logout);
-        bMyProfile = (Button) findViewById(R.id.button_my_profile);
-        bLogout.setOnClickListener(this);
-        bMyProfile.setOnClickListener(this);
+        binding.buttonLogout.setOnClickListener(this);
+        binding.buttonMyProfile.setOnClickListener(this);
 
         homePresenter = new HomePresenterImpl();
         homePresenter.attachView(this);
@@ -53,7 +47,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void setInfo(String email) {
-        txtName.setText("Hello! " + email);
+        binding.greetings.setText("Hello! " + email);
     }
 
     @Override
@@ -61,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.button_logout:
                 logout();
-                bLogout.setVisibility(View.GONE);
+                binding.buttonLogout.setVisibility(View.GONE);
                 launchLogin();
                 break;
             case R.id.button_my_profile:
@@ -85,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void login() {
         if (homePresenter.isUserLogged()) {
             homePresenter.displayLoggedUser();
-            bLogout.setVisibility(View.VISIBLE);
+            binding.buttonLogout.setVisibility(View.VISIBLE);
         } else {
             launchLogin();
         }
