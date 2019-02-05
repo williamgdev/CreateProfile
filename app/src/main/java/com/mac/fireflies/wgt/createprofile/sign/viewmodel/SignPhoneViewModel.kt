@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import java.lang.ref.WeakReference
 
 class SignPhoneViewModel : ViewModel() {
-    private lateinit var code : String
-    private lateinit var phoneNumber : String
-    private lateinit var signNavigator: WeakReference<SignNavigator>
+    private lateinit var code: String
+    private lateinit var phoneNumber: String
+    lateinit var signNavigator: WeakReference<SignNavigator>
 
     fun sendVerificationCode(phoneNumber: String) {
         this.phoneNumber = phoneNumber
@@ -14,16 +14,15 @@ class SignPhoneViewModel : ViewModel() {
     }
 
     fun verifyCode(code: String) {
+        this.code = code
         signNavigator.get()?.gotoVerifyCode()
     }
 
-    fun getPhoneNumber(): String
-    {
+    fun getPhoneNumber(): String {
         return phoneNumber
     }
-    fun getCode(): String
-    {
-        this.code = code
+
+    fun getCode(): String {
         return code
     }
 }
