@@ -1,19 +1,20 @@
 package com.mac.fireflies.wgt.createprofile.sign.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor
+import java.lang.ref.WeakReference
 
 class SignPhoneViewModel : ViewModel() {
     private lateinit var code : String
     private lateinit var phoneNumber : String
+    private lateinit var signNavigator: WeakReference<SignNavigator>
 
     fun sendVerificationCode(phoneNumber: String) {
-        //view.showProgress()
-       // appCoreInteractor.signInWithPhone(phoneNumber, view.getActivity(), signPhoneListener, AppCoreInteractor.SentCodeListener { view.hideProgress() })
+        this.phoneNumber = phoneNumber
+        signNavigator.get()?.gotoSignINWithPhone()
     }
 
     fun verifyCode(code: String) {
-        //appCoreInteractor.verifyPhoneCode(code, signPhoneListener)
+        signNavigator.get()?.gotoVerifyCode()
     }
 
     fun getPhoneNumber(): String
@@ -22,6 +23,12 @@ class SignPhoneViewModel : ViewModel() {
     }
     fun getCode(): String
     {
+        this.code = code
         return code
     }
+}
+
+interface SignNavigator {
+    fun gotoSignINWithPhone()
+    fun gotoVerifyCode()
 }

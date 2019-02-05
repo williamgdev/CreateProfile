@@ -4,7 +4,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel;
 
 /**
  * Created by willimail on 2/25/18.
@@ -13,16 +13,16 @@ import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
 
 public class SendCodePhoneViewState implements PhoneViewState {
 
-    private final SignPhonePresenter presenter;
+    private final SignPhoneViewModel phoneViewModel;
 
-    public SendCodePhoneViewState(TextView txtTitle, Button sendCodeButton) {
-        //this.presenter = presenter;
+    public SendCodePhoneViewState(TextView txtTitle, Button sendCodeButton, SignPhoneViewModel phoneViewModel) {
+        this.phoneViewModel = phoneViewModel;
         setTitle(txtTitle, sendCodeButton);
     }
 
     @Override
     public void phoneCodeAction(String phoneNumber) {
-        presenter.sendVerificationCode(phoneNumber);
+        phoneViewModel.sendVerificationCode(phoneNumber);
     }
 
     @Override
