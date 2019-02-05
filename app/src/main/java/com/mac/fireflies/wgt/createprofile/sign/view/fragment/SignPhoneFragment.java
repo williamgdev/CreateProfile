@@ -3,7 +3,6 @@ package com.mac.fireflies.wgt.createprofile.sign.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -20,9 +19,10 @@ import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodePhoneViewStat
 import com.mac.fireflies.wgt.createprofile.sign.view.state.PhoneViewState;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignPhoneFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodePhoneViewState;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignNavigator;
 import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel;
 
-public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView {
+public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView, SignNavigator {
     PhoneViewState phoneViewState;
     SignPhoneViewModel viewModel;
     private AppCoreInteractor appCoreInteractor;
@@ -88,9 +88,10 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
                 phoneCodeAction();
             }
         });
-        phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
+        phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
         return view;
     }
+
     private AppCoreInteractor.AppCoreListener<User> signPhoneListener = new AppCoreInteractor.AppCoreListener<User>() {
         @Override
         public void onResult(User result) {
@@ -104,9 +105,11 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
             hideProgress();
         }
     };
+
     public void verifyCode(String code) {
         appCoreInteractor.verifyPhoneCode(code, signPhoneListener);
     }
+
     public void sendVerificationCode(String phoneNumber) {
         this.showProgress();
         appCoreInteractor.signInWithPhone(phoneNumber, this.getActivity(), signPhoneListener, new AppCoreInteractor.SentCodeListener() {
@@ -116,21 +119,20 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
             }
         });
     }
+
     @Override
     public void phoneCodeAction() {
         phoneViewState.phoneCodeAction(binding.txtPhoneNumber.getText().toString());
         binding.txtPhoneNumber.setText("");
         switch (phoneViewState.getClass().getSimpleName()) {
             case "SendCodePhoneViewState":
-                phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
-                verifyCode(viewModel.getCode());
+                phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
                 break;
 
             case "VerifyCodePhoneViewState":
                 phoneViewState = null;
                 break;
         }
-
     }
 
     @Override
@@ -172,7 +174,17 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-        phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
+        phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
+    }
+
+    @Override
+    public void gotoSignINWithPhone() {
+        sendVerificationCode(viewModel.getPhoneNumber());
+    }
+
+    @Override
+    public void gotoVerifyCode() {
+        verifyCode(viewModel.getCode());
     }
 
     /**
