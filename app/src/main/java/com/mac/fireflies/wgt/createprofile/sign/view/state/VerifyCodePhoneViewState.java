@@ -12,16 +12,16 @@ import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
 
 public class VerifyCodePhoneViewState implements PhoneViewState {
 
-    private final SignPhonePresenter presenter;
+   // private final SignPhonePresenter presenter;
 
-    public VerifyCodePhoneViewState(TextView txtTitle, Button sendCodeButton, SignPhonePresenter presenter) {
-        this.presenter = presenter;
+    public VerifyCodePhoneViewState(TextView txtTitle, Button sendCodeButton) {
+        //this.presenter = presenter;
         setTitle(txtTitle, sendCodeButton);
     }
 
     @Override
     public void phoneCodeAction(String code) {
-        presenter.verifyCode(code);
+        //presenter.verifyCode(code);
     }
 
     @Override

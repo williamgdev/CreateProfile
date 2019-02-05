@@ -15,8 +15,8 @@ public class SendCodePhoneViewState implements PhoneViewState {
 
     private final SignPhonePresenter presenter;
 
-    public SendCodePhoneViewState(TextView txtTitle, Button sendCodeButton, SignPhonePresenter presenter) {
-        this.presenter = presenter;
+    public SendCodePhoneViewState(TextView txtTitle, Button sendCodeButton) {
+        //this.presenter = presenter;
         setTitle(txtTitle, sendCodeButton);
     }
 
