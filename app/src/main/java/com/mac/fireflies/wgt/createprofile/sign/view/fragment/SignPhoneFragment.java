@@ -2,27 +2,30 @@ package com.mac.fireflies.wgt.createprofile.sign.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
+import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
+import com.mac.fireflies.wgt.createprofile.databinding.FragmentSignPhoneBinding;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodePhoneViewState;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.PhoneViewState;
-import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenter;
-import com.mac.fireflies.wgt.createprofile.sign.presenter.SignPhonePresenterImpl;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignPhoneFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodePhoneViewState;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel;
 
 public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView {
-    SignPhonePresenter presenter;
     PhoneViewState phoneViewState;
+    SignPhoneViewModel viewModel;
+    private AppCoreInteractor appCoreInteractor;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -33,9 +36,10 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     private String mParam2;
 
     private OnSignPhoneFragmentListener mListener;
-    private EditText txtPhoneNumber;
+    /*private EditText txtPhoneNumber;
     private TextView txtTitle;
-    private Button sendCodeButton;
+    private Button sendCodeButton;*/
+    private FragmentSignPhoneBinding binding;
 
     public SignPhoneFragment() {
         // Required empty public constructor
@@ -66,33 +70,60 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        viewModel = ViewModelProviders.of(this).get(SignPhoneViewModel.class);
+        appCoreInteractor = AppCoreInteractor.getInstance();
+        binding = FragmentSignPhoneBinding.inflate(getActivity().getLayoutInflater());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_phone, container, false);
-        txtPhoneNumber = view.findViewById(R.id.txtPhoneNumber);
-        txtTitle = view.findViewById(R.id.txt_title);
-        sendCodeButton = view.findViewById(R.id.button_send_code);
-        sendCodeButton.setOnClickListener(new View.OnClickListener() {
+        binding.buttonSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 phoneCodeAction();
             }
         });
-        phoneViewState = new SendCodePhoneViewState(txtTitle, sendCodeButton, presenter);
+        phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
         return view;
     }
+    private AppCoreInteractor.AppCoreListener<User> signPhoneListener = new AppCoreInteractor.AppCoreListener<User>() {
+        @Override
+        public void onResult(User result) {
+            onLoginSuccessful(result);
+            hideProgress();
+        }
 
+        @Override
+        public void onError(String error) {
+            showText(error);
+            hideProgress();
+        }
+    };
+    public void verifyCode(String code) {
+        appCoreInteractor.verifyPhoneCode(code, signPhoneListener);
+    }
+    public void sendVerificationCode(String phoneNumber) {
+        this.showProgress();
+        appCoreInteractor.signInWithPhone(phoneNumber, this.getActivity(), signPhoneListener, new AppCoreInteractor.SentCodeListener() {
+            @Override
+            public void onCodeSent() {
+                hideProgress();
+            }
+        });
+    }
     @Override
     public void phoneCodeAction() {
-        phoneViewState.phoneCodeAction(txtPhoneNumber.getText().toString());
-        txtPhoneNumber.setText("");
+        phoneViewState.phoneCodeAction(binding.txtPhoneNumber.getText().toString());
+        binding.txtPhoneNumber.setText("");
         switch (phoneViewState.getClass().getSimpleName()) {
             case "SendCodePhoneViewState":
-                phoneViewState = new VerifyCodePhoneViewState(txtTitle, sendCodeButton, presenter);
+                phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
+                verifyCode(viewModel.getCode());
                 break;
 
             case "VerifyCodePhoneViewState":
@@ -110,8 +141,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        presenter = new SignPhonePresenterImpl();
-        presenter.attachView(this);
         if (context instanceof OnSignPhoneFragmentListener) {
             mListener = (OnSignPhoneFragmentListener) context;
         } else {
@@ -124,7 +153,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        presenter.detachView();
     }
 
     @Override
@@ -144,7 +172,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-        phoneViewState = new VerifyCodePhoneViewState(txtTitle, sendCodeButton, presenter);
+        phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode);
     }
 
     /**
