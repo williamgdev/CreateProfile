@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.sign.presenter.SignEmailPresenter;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignEmailViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,15 +20,18 @@ public class SignUpEmailViewState implements SignEmailViewState {
     private final EditText txtConfirmPassword;
     private final EditText txtFirstName;
     private final EditText txtLastName;
-    private final SignEmailPresenter presenter;
+    private final SignEmailViewModel viewModel;
 
-    public SignUpEmailViewState(AutoCompleteTextView txtEmail, EditText txtPassword, EditText txtConfirmPassword, EditText txtFirstName, EditText txtLastName, Button mEmailSignButton, View signUpFields, SignEmailPresenter emailPresenter) {
+    public SignUpEmailViewState(AutoCompleteTextView txtEmail, EditText txtPassword,
+                                EditText txtConfirmPassword, EditText txtFirstName,
+                                EditText txtLastName, Button mEmailSignButton,
+                                View signUpFields, SignEmailViewModel emailViewModel) {
         this.txtEmail = txtEmail;
         this.txtPassword = txtPassword;
         this.txtConfirmPassword = txtConfirmPassword;
         this.txtFirstName = txtFirstName;
         this.txtLastName = txtLastName;
-        this.presenter = emailPresenter;
+        this.viewModel = emailViewModel;
         this.button = mEmailSignButton;
         this.button.setText(R.string.action_sign_up);
         signUpFields.setVisibility(View.VISIBLE);
@@ -41,16 +45,16 @@ public class SignUpEmailViewState implements SignEmailViewState {
         fields.put(SignEmailPresenter.FIELD_CONFIRM_PASSWORD, txtConfirmPassword.getText().toString());
         fields.put(SignEmailPresenter.FIELD_FIRST_NAME, txtFirstName.getText().toString());
         fields.put(SignEmailPresenter.FIELD_LAST_NAME, txtLastName.getText().toString());
-        presenter.setFields(fields);
+        viewModel.setFields(fields);
     }
 
     @Override
     public boolean isSignFormValid() {
-        return presenter.isCredentialsValid() && presenter.isConfirmAndFullNameValid();
+        return this.viewModel.isCredentialsValid() && viewModel.isConfirmAndFullNameValid();
     }
 
     @Override
     public void attemptSignAction() {
-        presenter.attemptSignUp();
+        viewModel.attemptSignUp();
     }
 }

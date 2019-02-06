@@ -11,20 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.mac.fireflies.wgt.createprofile.R;
 import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
 import com.mac.fireflies.wgt.createprofile.core.model.User;
 import com.mac.fireflies.wgt.createprofile.databinding.FragmentSignPhoneBinding;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SendCodePhoneViewState;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.PhoneViewState;
-import com.mac.fireflies.wgt.createprofile.sign.view.SignPhoneFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodePhoneViewState;
 import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignNavigator;
 import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel;
 
 import java.lang.ref.WeakReference;
 
-public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView, SignNavigator {
+public class SignPhoneFragment extends Fragment implements SignNavigator {
     PhoneViewState phoneViewState;
     SignPhoneViewModel viewModel;
     private AppCoreInteractor appCoreInteractor;
@@ -38,9 +36,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     private String mParam2;
 
     private OnSignPhoneFragmentListener mListener;
-    /*private EditText txtPhoneNumber;
-    private TextView txtTitle;
-    private Button sendCodeButton;*/
     private FragmentSignPhoneBinding binding;
 
     public SignPhoneFragment() {
@@ -85,12 +80,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
 
         // Inflate the layout for this fragment
         binding = FragmentSignPhoneBinding.inflate(inflater, container, false);
-        binding.buttonSendCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                phoneCodeAction();
-            }
-        });
         phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
         return binding.getRoot();
     }
@@ -123,7 +112,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
         });
     }
 
-    @Override
     public void phoneCodeAction() {
         phoneViewState.phoneCodeAction(binding.txtPhoneNumber.getText().toString());
         binding.txtPhoneNumber.setText("");
@@ -138,7 +126,6 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
         }
     }
 
-    @Override
     public void onLoginSuccessful(User result) {
         mListener.onPhoneLoginSuccessful(result);
     }
@@ -160,21 +147,17 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
         mListener = null;
     }
 
-    @Override
     public void showProgress() {
 
     }
 
-    @Override
     public void hideProgress() {
 
     }
 
-    @Override
     public void setInfo(String email) {
     }
 
-    @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
         phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
@@ -188,6 +171,11 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
     @Override
     public void gotoVerifyCode() {
         verifyCode(viewModel.getCode());
+    }
+
+    @Override
+    public void callPhoneCodeAction() {
+        phoneCodeAction();
     }
 
     /**

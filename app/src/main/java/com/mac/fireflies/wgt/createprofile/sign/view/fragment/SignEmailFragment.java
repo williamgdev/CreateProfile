@@ -7,83 +7,98 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mac.fireflies.wgt.createprofile.R;
-import com.mac.fireflies.wgt.createprofile.sign.presenter.SignEmailPresenter;
-import com.mac.fireflies.wgt.createprofile.sign.presenter.SignEmailPresenterImpl;
+import com.mac.fireflies.wgt.createprofile.core.interactor.AppCoreInteractor;
+import com.mac.fireflies.wgt.createprofile.core.model.User;
+import com.mac.fireflies.wgt.createprofile.databinding.FragmentSignEmailBinding;
 import com.mac.fireflies.wgt.createprofile.sign.view.SignEmailFragmentView;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SignEmailViewState;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SignInEmailViewState;
 import com.mac.fireflies.wgt.createprofile.sign.view.state.SignUpEmailViewState;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.ISignEmailViewModel;
+import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignEmailViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 
-public class SignEmailFragment extends Fragment implements SignEmailFragmentView {
-    SignEmailViewState state;
+public class SignEmailFragment extends Fragment implements SignEmailFragmentView, ISignEmailViewModel {
+    private SignEmailViewState state;
+    private SignEmailViewModel viewModel;
+    private FragmentSignEmailBinding binding;
+    private AppCoreInteractor appCoreInteractor;
 
     private OnSignWithEmailListener onSignWithEmailListener;
-    private AutoCompleteTextView txtEmail;
-    private EditText txtPassword;
-    private EditText txtLastName;
-    private EditText txtConfirmPassword;
-    private EditText txtFirstName;
     private View scrollView;
     private View progressBar;
     private View focusView = null;
 
     protected static final int REQUEST_READ_CONTACTS = 0;
-    private SignEmailPresenter presenter;
-    private Button mEmailSignButton;
-    private View signUpFields;
 
     public static SignEmailFragment newInstance(boolean isSignUp) {
         SignEmailFragment fragment = new SignEmailFragment();
+        SignEmailViewModel viewModel = ViewModelProviders.of(fragment).get(SignEmailViewModel.class);
         Bundle args = new Bundle();
-        args.putBoolean(SignEmailPresenterImpl.IS_SIGN_UP, isSignUp);
+        args.putBoolean(viewModel.IS_SIGN_UP, isSignUp);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        appCoreInteractor = AppCoreInteractor.getInstance();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        binding = FragmentSignEmailBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sign_email, container, false);
-        txtEmail = view.findViewById(R.id.email);
-        txtPassword = view.findViewById(R.id.password);
-        txtConfirmPassword = view.findViewById(R.id.password_confirmation);
-        txtFirstName = view.findViewById(R.id.fist_name);
-        txtLastName = view.findViewById(R.id.last_name);
-        mEmailSignButton = view.findViewById(R.id.email_sign_button);
-        signUpFields = view.findViewById(R.id.sign_up_fields);
-        progressBar = view.findViewById(R.id.progressBar);
-        presenter = new SignEmailPresenterImpl();
-        presenter.attachView(this);
-        presenter.loadData(getArguments());
-        if (presenter.isSignUp()) {
-            state = new SignUpEmailViewState(txtEmail, txtPassword, txtConfirmPassword, txtFirstName, txtLastName, mEmailSignButton, signUpFields, presenter);
-            txtLastName.setOnEditorActionListener(editorActionListener);
+        viewModel = ViewModelProviders.of(this).get(SignEmailViewModel.class);
+
+        progressBar = binding.getRoot().findViewById(R.id.progressBar);
+        viewModel.loadData(getArguments());
+        if (viewModel.isSignUp()) {
+            state = new SignUpEmailViewState(
+                    binding.email,
+                    binding.password,
+                    binding.passwordConfirmation,
+                    binding.fistName,
+                    binding.lastName,
+                    binding.emailSignButton,
+                    binding.signUpFields,
+                    viewModel);
+            binding.lastName.setOnEditorActionListener(editorActionListener);
         } else {
-            state = new SignInEmailViewState(txtEmail, txtPassword, mEmailSignButton, signUpFields, presenter);
-            txtPassword.setOnEditorActionListener(editorActionListener);
+            state = new SignInEmailViewState(
+                    binding.email,
+                    binding.password,
+                    binding.emailSignButton,
+                    binding.signUpFields,
+                    viewModel);
+            binding.password.setOnEditorActionListener(editorActionListener);
         }
-        mEmailSignButton.setOnClickListener(onClickListener);
-        return view;
+        binding.emailSignButton.setOnClickListener(onClickListener);
+        return binding.getRoot();
     }
 
     private TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
@@ -135,7 +150,10 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Toast.makeText(getContext(), txtEmail + getContext().getResources().getString(R.string.permission_rationale), Toast.LENGTH_LONG);
+            Toast.makeText(getContext(),binding.email + getContext()
+                            .getResources()
+                            .getString(R.string.permission_rationale),
+                    Toast.LENGTH_LONG);
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
@@ -146,8 +164,8 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
     @Override
     public void resetError() {
         // Reset errors.
-        txtEmail.setError(null);
-        txtPassword.setError(null);
+        binding.email.setError(null);
+        binding.password.setError(null);
     }
 
     @Override
@@ -157,7 +175,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
 
     @Override
     public void setEmailAdapter(ArrayAdapter<String> adapter) {
-        txtEmail.setAdapter(adapter);
+        binding.email.setAdapter(adapter);
     }
 
     @Override
@@ -172,27 +190,27 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
 
     @Override
     public void setPasswordError(@StringRes int text) {
-        setErrorAndFocus(txtPassword, text);
+        setErrorAndFocus(binding.password, text);
     }
 
     @Override
     public void setEmailError(int text) {
-        setErrorAndFocus(txtEmail, text);
+        setErrorAndFocus(binding.email, text);
     }
 
     @Override
     public void setConfirmationPasswordError(int text) {
-        setErrorAndFocus(txtConfirmPassword, text);
+        setErrorAndFocus(binding.passwordConfirmation, text);
     }
 
     @Override
     public void setFirstNameError(int text) {
-        setErrorAndFocus(txtFirstName, text);
+        setErrorAndFocus(binding.fistName, text);
     }
 
     @Override
     public void setLastNameError(int text) {
-        setErrorAndFocus(txtLastName, text);
+        setErrorAndFocus(binding.lastName, text);
     }
 
     private void setErrorAndFocus(EditText editText, @StringRes int text) {
@@ -213,7 +231,8 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                presenter.populateAutoComplete();
+                //presenter.populateAutoComplete();
+                mayRequestContacts();
             }
         }
     }
@@ -274,7 +293,7 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
+        //presenter.detachView();
     }
 
     @Override
@@ -287,8 +306,98 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         onSignWithEmailListener.onSignInSuccessful();
     }
 
+    @Override
+    public void callRequestFocusView() {
+        requestFocusView();
+    }
+
+    @Override
+    public void callSetInvalidPasswordError() {
+        setPasswordError(R.string.error_invalid_password);
+    }
+
+    @Override
+    public void callSetRequiredPasswordError() {
+        setPasswordError(R.string.error_field_required);
+    }
+
+    @Override
+    public void callSetEmailError() {
+        setEmailError(R.string.error_invalid_email);
+    }
+
+    @Override
+    public void callSignIn(@NotNull String email, @NotNull String password) {
+        appCoreInteractor.signIn(email, password, new AppCoreInteractor.AppCoreListener<User>() {
+            @Override
+            public void onResult(User result) {
+                hideProgress();
+                onLoginSuccessful();
+            }
+
+            @Override
+            public void onError(String error) {
+                hideProgress();
+            }
+        });
+    }
+
+    @Override
+    public void callResetErrors() {
+        resetError();
+    }
+
+    @Override
+    public void callShowProgress() {
+        showProgress();
+    }
+
+    @Override
+    public void callSignUp(@NotNull String email, @NotNull String password) {
+        showProgress();
+        appCoreInteractor.signUp(email, password, new AppCoreInteractor.AppCoreListener<User>() {
+            @Override
+            public void onResult(User result) {
+                hideProgress();
+                onSingUpSuccessful();
+            }
+
+            @Override
+            public void onError(String error) {
+                hideProgress();
+                showText(error);
+            }
+        });
+    }
+
+    @Override
+    public void callSendFieldsToPresenterFromState() {
+        sendFieldsToPresenterFromState();
+    }
+
+    @Override
+    public boolean callIsSignFormValid() {
+        return isSignFormValid();
+    }
+
+    @Override
+    public void callSetConfirmationPasswordError() {
+        setConfirmationPasswordError(R.string.error_invalid_confirmation_password);
+    }
+
+    @Override
+    public void callSetFirstNameError() {
+        setFirstNameError(R.string.error_field_required);
+    }
+
+    @Override
+    public void callSetLastNameError() {
+        setLastNameError(R.string.error_field_required);
+    }
+
     public interface OnSignWithEmailListener {
         void onSignInSuccessful();
+
         void onSignUpSuccessful();
     }
 }

@@ -25,9 +25,13 @@ class SignPhoneViewModel : ViewModel() {
     fun getCode(): String {
         return code
     }
+    fun phoneCodeAction(){
+        signNavigator.get()?.callPhoneCodeAction()
+    }
 }
 
 interface SignNavigator {
     fun gotoSignINWithPhone()
     fun gotoVerifyCode()
+    fun callPhoneCodeAction()
 }
