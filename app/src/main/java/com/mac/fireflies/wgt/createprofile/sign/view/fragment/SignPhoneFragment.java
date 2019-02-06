@@ -22,6 +22,8 @@ import com.mac.fireflies.wgt.createprofile.sign.view.state.VerifyCodePhoneViewSt
 import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignNavigator;
 import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel;
 
+import java.lang.ref.WeakReference;
+
 public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView, SignNavigator {
     PhoneViewState phoneViewState;
     SignPhoneViewModel viewModel;
@@ -72,16 +74,17 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
         }
 
         viewModel = ViewModelProviders.of(this).get(SignPhoneViewModel.class);
+        viewModel.signNavigator = new WeakReference(this);
         appCoreInteractor = AppCoreInteractor.getInstance();
-        binding = FragmentSignPhoneBinding.inflate(getActivity().getLayoutInflater());
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sign_phone, container, false);
+        binding = FragmentSignPhoneBinding.inflate(inflater, container, false);
         binding.buttonSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +92,7 @@ public class SignPhoneFragment extends Fragment implements SignPhoneFragmentView
             }
         });
         phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
-        return view;
+        return binding.getRoot();
     }
 
     private AppCoreInteractor.AppCoreListener<User> signPhoneListener = new AppCoreInteractor.AppCoreListener<User>() {
