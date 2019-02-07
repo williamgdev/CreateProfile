@@ -1,37 +1,34 @@
 package com.mac.fireflies.wgt.createprofile.sign.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.lang.ref.WeakReference
 
 class SignPhoneViewModel : ViewModel() {
-    private lateinit var code: String
-    private lateinit var phoneNumber: String
     lateinit var signNavigator: WeakReference<SignNavigator>
+    var userInput = MutableLiveData<String>()
+    var sendPhone = MutableLiveData<Boolean?>().apply { postValue(null) }
+    var phoneDataModel = PhoneData()
 
-    fun sendVerificationCode(phoneNumber: String) {
-        this.phoneNumber = phoneNumber
-        signNavigator.get()?.gotoSignINWithPhone()
+    fun phoneCodeAction(){
+        when {
+            sendPhone.value == null -> {
+                phoneDataModel.phoneNumber = userInput.value
+                sendPhone.postValue(true)
+            }
+            sendPhone.value == true -> {
+                phoneDataModel.code = userInput.value
+                sendPhone.postValue(false)
+            }
+        }
     }
 
-    fun verifyCode(code: String) {
-        this.code = code
+    fun verifyCode() {
         signNavigator.get()?.gotoVerifyCode()
     }
-
-    fun getPhoneNumber(): String {
-        return phoneNumber
-    }
-
-    fun getCode(): String {
-        return code
-    }
-    fun phoneCodeAction(){
-        signNavigator.get()?.callPhoneCodeAction()
-    }
 }
+data class PhoneData(var phoneNumber: String? = null, var code:String? = null)
 
 interface SignNavigator {
-    fun gotoSignINWithPhone()
     fun gotoVerifyCode()
-    fun callPhoneCodeAction()
 }

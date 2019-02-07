@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -71,6 +72,7 @@ public class SignPhoneFragment extends Fragment implements SignNavigator {
         viewModel = ViewModelProviders.of(this).get(SignPhoneViewModel.class);
         viewModel.signNavigator = new WeakReference(this);
         appCoreInteractor = AppCoreInteractor.getInstance();
+
     }
 
 
@@ -80,7 +82,16 @@ public class SignPhoneFragment extends Fragment implements SignNavigator {
 
         // Inflate the layout for this fragment
         binding = FragmentSignPhoneBinding.inflate(inflater, container, false);
+        binding.setViewmodel(viewModel);
         phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
+        viewModel.getSendPhone().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean sendPhone) {
+                if (sendPhone != null) {
+                    phoneCodeAction();
+                }
+            }
+        });
         return binding.getRoot();
     }
 
@@ -113,8 +124,8 @@ public class SignPhoneFragment extends Fragment implements SignNavigator {
     }
 
     public void phoneCodeAction() {
-        phoneViewState.phoneCodeAction(binding.txtPhoneNumber.getText().toString());
-        binding.txtPhoneNumber.setText("");
+        phoneViewState.phoneCodeAction(viewModel.getUserInput().getValue());
+        viewModel.getUserInput().postValue("");
         switch (phoneViewState.getClass().getSimpleName()) {
             case "SendCodePhoneViewState":
                 phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
@@ -163,20 +174,15 @@ public class SignPhoneFragment extends Fragment implements SignNavigator {
         phoneViewState = new VerifyCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
     }
 
-    @Override
     public void gotoSignINWithPhone() {
-        sendVerificationCode(viewModel.getPhoneNumber());
+        sendVerificationCode(viewModel.getUserInput().getValue());
     }
 
     @Override
     public void gotoVerifyCode() {
-        verifyCode(viewModel.getCode());
+        verifyCode(viewModel.getUserInput().getValue());
     }
 
-    @Override
-    public void callPhoneCodeAction() {
-        phoneCodeAction();
-    }
 
     /**
      * This interface must be implemented by activities that contain this

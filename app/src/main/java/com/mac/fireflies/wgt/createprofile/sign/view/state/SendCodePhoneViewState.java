@@ -22,7 +22,7 @@ public class SendCodePhoneViewState implements PhoneViewState {
 
     @Override
     public void phoneCodeAction(String phoneNumber) {
-        phoneViewModel.sendVerificationCode(phoneNumber);
+        phoneViewModel.getUserInput().postValue(phoneNumber);
     }
 
     @Override

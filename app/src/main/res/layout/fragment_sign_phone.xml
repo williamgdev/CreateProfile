@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewmodel"
             type="com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignPhoneViewModel" />
@@ -25,6 +24,7 @@
             android:id="@+id/txtPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@={viewmodel.userInput}"
             android:ems="10"
             android:inputType="phone" />
 
