@@ -84,7 +84,7 @@ public class SignPhoneFragment extends Fragment implements SignNavigator {
         binding = FragmentSignPhoneBinding.inflate(inflater, container, false);
         binding.setViewmodel(viewModel);
         phoneViewState = new SendCodePhoneViewState(binding.txtTitle, binding.buttonSendCode, viewModel);
-        viewModel.getSendPhone().observe(this, new Observer<Boolean>() {
+        viewModel.getShouldSendPhone().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean sendPhone) {
                 if (sendPhone != null) {

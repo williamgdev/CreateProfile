@@ -7,18 +7,18 @@ import java.lang.ref.WeakReference
 class SignPhoneViewModel : ViewModel() {
     lateinit var signNavigator: WeakReference<SignNavigator>
     var userInput = MutableLiveData<String>()
-    var sendPhone = MutableLiveData<Boolean?>().apply { postValue(null) }
+    var shouldSendPhone = MutableLiveData<Boolean?>().apply { postValue(null) }
     var phoneDataModel = PhoneData()
 
     fun phoneCodeAction(){
         when {
-            sendPhone.value == null -> {
+            shouldSendPhone.value == null -> {
                 phoneDataModel.phoneNumber = userInput.value
-                sendPhone.postValue(true)
+                shouldSendPhone.postValue(true)
             }
-            sendPhone.value == true -> {
+            shouldSendPhone.value == true -> {
                 phoneDataModel.code = userInput.value
-                sendPhone.postValue(false)
+                shouldSendPhone.postValue(false)
             }
         }
     }
