@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import java.lang.ref.WeakReference
 
 class SignEmailViewModel : ViewModel() {
+    companion object {
+        const val IS_SIGN_UP = "IS_SIGN_UP"
+    }
     private var mIsSignUp : Boolean = false
-    public val IS_SIGN_UP = "IS_SIGN_UP"
 
     val FIELD_EMAIL = "EMAIL"
     val FIELD_PASSWORD = "PASSWORD"
@@ -42,8 +44,8 @@ class SignEmailViewModel : ViewModel() {
         //TODO: Replace this with your own logic
         return password.length > 4
     }
-            fun isCredentialsValid(): Boolean
-            {
+
+    fun isCredentialsValid(): Boolean {
         var valid = true
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(mPassword) && !isPasswordValid(mPassword!!)) {

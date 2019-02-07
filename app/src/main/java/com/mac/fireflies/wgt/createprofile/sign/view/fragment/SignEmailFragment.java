@@ -36,46 +36,39 @@ import com.mac.fireflies.wgt.createprofile.sign.viewmodel.SignEmailViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 
-public class SignEmailFragment extends Fragment implements SignEmailFragmentView, ISignEmailViewModel {
+public class SignEmailFragment extends Fragment implements ISignEmailViewModel {
     private SignEmailViewState state;
     private SignEmailViewModel viewModel;
     private FragmentSignEmailBinding binding;
     private AppCoreInteractor appCoreInteractor;
 
     private OnSignWithEmailListener onSignWithEmailListener;
-    private View scrollView;
-    private View progressBar;
     private View focusView = null;
 
     protected static final int REQUEST_READ_CONTACTS = 0;
 
     public static SignEmailFragment newInstance(boolean isSignUp) {
         SignEmailFragment fragment = new SignEmailFragment();
-        SignEmailViewModel viewModel = ViewModelProviders.of(fragment).get(SignEmailViewModel.class);
         Bundle args = new Bundle();
-        args.putBoolean(viewModel.IS_SIGN_UP, isSignUp);
+        args.putBoolean(SignEmailViewModel.IS_SIGN_UP, isSignUp);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        appCoreInteractor = AppCoreInteractor.getInstance();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        appCoreInteractor = AppCoreInteractor.getInstance();
         binding = FragmentSignEmailBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
         viewModel = ViewModelProviders.of(this).get(SignEmailViewModel.class);
+        viewModel.actions = new WeakReference(this);
 
-        progressBar = binding.getRoot().findViewById(R.id.progressBar);
         viewModel.loadData(getArguments());
         if (viewModel.isSignUp()) {
             state = new SignUpEmailViewState(
@@ -119,29 +112,20 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         }
     };
 
-    @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
         getView().findViewById(R.id.container_layout).setVisibility(View.GONE);
     }
 
-    @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
         getView().findViewById(R.id.container_layout).setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void setInfo(String email) {
-        showText(email);
-    }
-
-    @Override
     public void showText(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
     public boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -161,54 +145,44 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         return false;
     }
 
-    @Override
     public void resetError() {
         // Reset errors.
         binding.email.setError(null);
         binding.password.setError(null);
     }
 
-    @Override
     public boolean isCredentialsValid() {
         return state.isSignFormValid();
     }
 
-    @Override
     public void setEmailAdapter(ArrayAdapter<String> adapter) {
         binding.email.setAdapter(adapter);
     }
 
-    @Override
     public void sendFieldsToPresenterFromState() {
         state.sendFieldsToPresenter();
     }
 
-    @Override
     public boolean isSignFormValid() {
         return state.isSignFormValid();
     }
 
-    @Override
     public void setPasswordError(@StringRes int text) {
         setErrorAndFocus(binding.password, text);
     }
 
-    @Override
     public void setEmailError(int text) {
         setErrorAndFocus(binding.email, text);
     }
 
-    @Override
     public void setConfirmationPasswordError(int text) {
         setErrorAndFocus(binding.passwordConfirmation, text);
     }
 
-    @Override
     public void setFirstNameError(int text) {
         setErrorAndFocus(binding.fistName, text);
     }
 
-    @Override
     public void setLastNameError(int text) {
         setErrorAndFocus(binding.lastName, text);
     }
@@ -218,7 +192,6 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         focusView = editText;
     }
 
-    @Override
     public void requestFocusView() {
         focusView.requestFocus();
     }
@@ -248,28 +221,28 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
-            scrollView.animate().setDuration(shortAnimTime).alpha(
+            binding.loginFormScrollView.setVisibility(show ? View.GONE : View.VISIBLE);
+            binding.loginFormScrollView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    binding.loginFormScrollView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressBar.animate().setDuration(shortAnimTime).alpha(
+            binding.progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.progressBar.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    binding.progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            scrollView.setVisibility(show ? View.GONE : View.VISIBLE);
+            binding.progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            binding.loginFormScrollView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -296,12 +269,10 @@ public class SignEmailFragment extends Fragment implements SignEmailFragmentView
         //presenter.detachView();
     }
 
-    @Override
     public void onSingUpSuccessful() {
         onSignWithEmailListener.onSignUpSuccessful();
     }
 
-    @Override
     public void onLoginSuccessful() {
         onSignWithEmailListener.onSignInSuccessful();
     }
